@@ -1,0 +1,1020 @@
+/* Dashboard Étudiant - Styles spécifiques */
+
+/* Variables CSS pour le thème étudiant */
+:root {
+    --etudiant-primary: #3b82f6;
+    --etudiant-secondary: #8b5cf6;
+    --etudiant-success: #10b981;
+    --etudiant-warning: #f59e0b;
+    --etudiant-danger: #ef4444;
+    --etudiant-info: #06b6d4;
+    
+    --card-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    --card-shadow-hover: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    --border-radius-lg: 12px;
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Layout principal */
+.container-fluid {
+    padding: 1.5rem;
+}
+
+/* Cartes statistiques */
+.stat-card {
+    background: white;
+    border: none;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--card-shadow);
+    transition: var(--transition-smooth);
+    overflow: hidden;
+    position: relative;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--etudiant-primary), var(--etudiant-secondary));
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--card-shadow-hover);
+}
+
+.stat-card .card-body {
+    padding: 1.5rem;
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.stat-icon.bg-primary {
+    background: linear-gradient(135deg, var(--etudiant-primary), #1e40af);
+}
+
+.stat-icon.bg-success {
+    background: linear-gradient(135deg, var(--etudiant-success), #047857);
+}
+
+.stat-icon.bg-warning {
+    background: linear-gradient(135deg, var(--etudiant-warning), #d97706);
+}
+
+.stat-icon.bg-info {
+    background: linear-gradient(135deg, var(--etudiant-info), #0891b2);
+}
+
+.stat-icon.bg-danger {
+    background: linear-gradient(135deg, var(--etudiant-danger), #dc2626);
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1f2937;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+}
+
+.stat-subtitle {
+    font-size: 0.75rem;
+    margin-bottom: 0;
+}
+
+/* Progress bars dans les cartes stats */
+.stat-card .progress {
+    height: 6px;
+    background-color: #f3f4f6;
+    border-radius: 3px;
+}
+
+.stat-card .progress-bar {
+    border-radius: 3px;
+}
+
+/* Timeline du projet */
+.timeline-card {
+    background: white;
+    border: none;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--card-shadow);
+}
+
+.timeline {
+    position: relative;
+    padding-left: 0;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 30px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #e5e7eb;
+}
+
+.timeline-item {
+    position: relative;
+    padding-left: 70px;
+    padding-bottom: 2rem;
+}
+
+.timeline-item:last-child {
+    padding-bottom: 0;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: 18px;
+    top: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    background: #f3f4f6;
+    color: #6b7280;
+    border: 2px solid white;
+    box-shadow: 0 0 0 3px #f3f4f6;
+}
+
+.timeline-item.completed .timeline-marker {
+    background: var(--etudiant-success);
+    color: white;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+
+.timeline-item.current .timeline-marker {
+    background: var(--etudiant-primary);
+    color: white;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    animation: pulse-timeline 2s infinite;
+}
+
+.timeline-content h6 {
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.timeline-content small {
+    color: #6b7280;
+}
+
+@keyframes pulse-timeline {
+    0%, 100% {
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+    50% {
+        box-shadow: 0 0 0 6px rgba(59, 130, 246, 0.1);
+    }
+}
+
+/* Carte d'activités */
+.activity-card {
+    background: white;
+    border: none;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--card-shadow);
+}
+
+.activity-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.activity-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 1rem 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--etudiant-primary), var(--etudiant-secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.875rem;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.activity-content {
+    flex: 1;
+}
+
+.activity-title {
+    font-weight: 500;
+    color: #1f2937;
+    margin-bottom: 0.25rem;
+    font-size: 0.875rem;
+}
+
+.activity-time {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+/* Carte de statut du rapport */
+.rapport-status-card {
+    background: white;
+    border: none;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--card-shadow);
+}
+
+.rapport-info {
+    padding: 0.5rem 0;
+}
+
+.rapport-title {
+    color: #1f2937;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.rapport-actions {
+    border-top: 1px solid #f3f4f6;
+    padding-top: 1rem;
+}
+
+.rapport-actions .btn {
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Carte de feedbacks */
+.feedbacks-card {
+    background: white;
+    border: none;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--card-shadow);
+}
+
+.feedbacks-list {
+    max-height: 350px;
+    overflow-y: auto;
+}
+
+.feedback-item {
+    padding: 1rem 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.feedback-item:last-child {
+    border-bottom: none;
+}
+
+.feedback-evaluator {
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.feedback-content {
+    color: #4b5563;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+}
+
+.feedback-date {
+    font-size: 0.75rem;
+}
+
+.feedback-rating .badge {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+}
+
+/* Carte de calendrier */
+.calendar-card {
+    background: white;
+    border: none;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--card-shadow);
+}
+
+.events-list {
+    max-height: 350px;
+    overflow-y: auto;
+}
+
+.event-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.event-item:last-child {
+    border-bottom: none;
+}
+
+.event-date {
+    width: 60px;
+    text-align: center;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.event-day {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--etudiant-primary);
+    line-height: 1;
+}
+
+.event-month {
+    font-size: 0.75rem;
+    color: #6b7280;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.event-info {
+    flex: 1;
+}
+
+.event-title {
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 0.25rem;
+}
+
+.event-time,
+.event-location {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-bottom: 0.125rem;
+}
+
+/* Carte de réclamations */
+.reclamations-card {
+    background: white;
+    border: none;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--card-shadow);
+}
+
+.reclamations-list {
+    max-height: 350px;
+    overflow-y: auto;
+}
+
+.reclamation-item {
+    padding: 1rem 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.reclamation-item:last-child {
+    border-bottom: none;
+}
+
+.reclamation-subject {
+    font-weight: 500;
+    color: #1f2937;
+    margin-bottom: 0.25rem;
+    font-size: 0.875rem;
+}
+
+.reclamation-date {
+    font-size: 0.75rem;
+}
+
+/* Carte d'éligibilité */
+.eligibilite-card {
+    background: white;
+    border: none;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--card-shadow);
+}
+
+.eligibilite-status .badge {
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+}
+
+.eligibilite-details {
+    margin-top: 1rem;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    font-size: 0.875rem;
+}
+
+.detail-item:last-child {
+    margin-bottom: 0;
+}
+
+.eligibilite-progress h6 {
+    color: #1f2937;
+    margin-bottom: 1rem;
+}
+
+.eligibilite-progress .progress {
+    height: 10px;
+    background-color: #f3f4f6;
+    border-radius: 5px;
+}
+
+.eligibilite-progress .progress-bar {
+    border-radius: 5px;
+}
+
+.progress-details {
+    margin-top: 1rem;
+}
+
+.progress-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.progress-item:last-child {
+    margin-bottom: 0;
+}
+
+/* Badges personnalisés */
+.badge-lg {
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+}
+
+/* Header de cartes */
+.card-header {
+    background: #f8fafc;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 1.25rem 1.5rem;
+}
+
+.card-header .card-title {
+    color: #1f2937;
+    font-weight: 600;
+    font-size: 1.125rem;
+}
+
+/* Boutons personnalisés */
+.btn-primary {
+    background: linear-gradient(135deg, var(--etudiant-primary), #1e40af);
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: var(--transition-smooth);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #1e40af, var(--etudiant-primary));
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.btn-outline-primary {
+    border: 2px solid var(--etudiant-primary);
+    color: var(--etudiant-primary);
+    background: transparent;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: var(--transition-smooth);
+}
+
+.btn-outline-primary:hover {
+    background: var(--etudiant-primary);
+    color: white;
+    transform: translateY(-1px);
+}
+
+/* États vides */
+.text-center.text-muted i {
+    opacity: 0.5;
+}
+
+.text-center.text-muted p {
+    margin-bottom: 0;
+    font-size: 0.875rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container-fluid {
+        padding: 1rem;
+    }
+    
+    .stat-card .card-body {
+        padding: 1.25rem;
+    }
+    
+    .stat-value {
+        font-size: 1.75rem;
+    }
+    
+    .timeline-item {
+        padding-left: 50px;
+    }
+    
+    .timeline::before {
+        left: 20px;
+    }
+    
+    .timeline-marker {
+        left: 8px;
+        width: 20px;
+        height: 20px;
+        font-size: 0.625rem;
+    }
+    
+    .activity-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 0.75rem;
+    }
+    
+    .event-date {
+        width: 50px;
+    }
+    
+    .event-day {
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .stat-card .d-flex {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .stat-icon {
+        margin: 0 auto 1rem;
+    }
+    
+    .flex-shrink-0 {
+        flex-shrink: 1;
+    }
+    
+    .rapport-actions .btn {
+        width: 100%;
+        margin-right: 0;
+    }
+    
+    .eligibilite-card .row {
+        flex-direction: column;
+    }
+    
+    .eligibilite-card .col-md-6:first-child {
+        margin-bottom: 2rem;
+    }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.stat-card,
+.timeline-card,
+.activity-card,
+.rapport-status-card,
+.feedbacks-card,
+.calendar-card,
+.reclamations-card,
+.eligibilite-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* Effet de pulse pour les notifications */
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Scrollbar personnalisée */
+.activity-list::-webkit-scrollbar,
+.feedbacks-list::-webkit-scrollbar,
+.events-list::-webkit-scrollbar,
+.reclamations-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.activity-list::-webkit-scrollbar-track,
+.feedbacks-list::-webkit-scrollbar-track,
+.events-list::-webkit-scrollbar-track,
+.reclamations-list::-webkit-scrollbar-track {
+    background: #f3f4f6;
+    border-radius: 3px;
+}
+
+.activity-list::-webkit-scrollbar-thumb,
+.feedbacks-list::-webkit-scrollbar-thumb,
+.events-list::-webkit-scrollbar-thumb,
+.reclamations-list::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 3px;
+}
+
+.activity-list::-webkit-scrollbar-thumb:hover,
+.feedbacks-list::-webkit-scrollbar-thumb:hover,
+.events-list::-webkit-scrollbar-thumb:hover,
+.reclamations-list::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
+/* Dark mode support (optionnel) */
+@media (prefers-color-scheme: dark) {
+    .stat-card,
+    .timeline-card,
+    .activity-card,
+    .rapport-status-card,
+    .feedbacks-card,
+    .calendar-card,
+    .reclamations-card,
+    .eligibilite-card {
+        background: #1f2937;
+        color: #f9fafb;
+    }
+    
+    .card-header {
+        background: #374151;
+        border-bottom-color: #4b5563;
+    }
+    
+    .card-title,
+    .stat-value,
+    .activity-title,
+    .rapport-title,
+    .feedback-evaluator,
+    .event-title,
+    .reclamation-subject {
+        color: #f9fafb;
+    }
+    
+    .timeline::before {
+        background: #4b5563;
+    }
+    
+    .activity-item,
+    .feedback-item,
+    .event-item,
+    .reclamation-item {
+        border-bottom-color: #374151;
+    }
+}
+
+/* Effets de hover sur les cartes */
+.stat-card:hover .stat-icon {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+.activity-item:hover,
+.feedback-item:hover,
+.event-item:hover,
+.reclamation-item:hover {
+    background-color: rgba(59, 130, 246, 0.03);
+    transition: background-color 0.3s ease;
+}
+
+/* Indicateurs de statut */
+.status-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+}
+
+.status-indicator.success {
+    background-color: var(--etudiant-success);
+}
+
+.status-indicator.warning {
+    background-color: var(--etudiant-warning);
+}
+
+.status-indicator.danger {
+    background-color: var(--etudiant-danger);
+}
+
+.status-indicator.info {
+    background-color: var(--etudiant-info);
+}
+
+/* Améliorations pour l'accessibilité */
+.btn:focus,
+.card:focus {
+    outline: 2px solid var(--etudiant-primary);
+    outline-offset: 2px;
+}
+
+/* Animations de chargement */
+.loading-skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Styles pour les états de chargement */
+.stat-card.loading .stat-value,
+.stat-card.loading .stat-label {
+    background: #f0f0f0;
+    color: transparent;
+    border-radius: 4px;
+    animation: loading 1.5s infinite;
+}
+
+/* Styles pour les badges de notification */
+.notification-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--etudiant-danger);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+/* Styles pour les graphiques et visualisations */
+.chart-container {
+    position: relative;
+    height: 200px;
+    margin: 1rem 0;
+}
+
+.mini-chart {
+    height: 60px;
+    width: 100%;
+}
+
+/* Styles pour les boutons d'action rapide */
+.quick-actions {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 1040;
+}
+
+.quick-action-btn {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--etudiant-primary), var(--etudiant-secondary));
+    border: none;
+    color: white;
+    font-size: 1.25rem;
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
+    transition: var(--transition-smooth);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quick-action-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
+}
+
+.quick-action-btn:last-child {
+    margin-bottom: 0;
+}
+
+/* Masquer les actions rapides sur mobile */
+@media (max-width: 768px) {
+    .quick-actions {
+        display: none;
+    }
+}
+
+/* Styles pour les modales personnalisées */
+.modal-content {
+    border: none;
+    border-radius: var(--border-radius-lg);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.modal-header {
+    border-bottom: 1px solid #e5e7eb;
+    padding: 1.5rem;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    border-top: 1px solid #e5e7eb;
+    padding: 1.5rem;
+}
+
+/* Styles pour les alertes personnalisées */
+.alert-custom {
+    border: none;
+    border-radius: var(--border-radius-lg);
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.alert-custom.alert-info {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(59, 130, 246, 0.1));
+    color: var(--etudiant-info);
+    border-left: 4px solid var(--etudiant-info);
+}
+
+.alert-custom.alert-success {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(34, 197, 94, 0.1));
+    color: var(--etudiant-success);
+    border-left: 4px solid var(--etudiant-success);
+}
+
+.alert-custom.alert-warning {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.1));
+    color: var(--etudiant-warning);
+    border-left: 4px solid var(--etudiant-warning);
+}
+
+.alert-custom.alert-danger {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(248, 113, 113, 0.1));
+    color: var(--etudiant-danger);
+    border-left: 4px solid var(--etudiant-danger);
+}
+
+/* Styles pour les tooltips personnalisés */
+.tooltip-custom {
+    font-size: 0.875rem;
+}
+
+.tooltip-custom .tooltip-inner {
+    background: #1f2937;
+    color: white;
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    max-width: 200px;
+}
+
+.tooltip-custom .tooltip-arrow::before {
+    border-top-color: #1f2937;
+}
+
+/* Styles pour les dropdowns personnalisés */
+.dropdown-menu-custom {
+    border: none;
+    border-radius: var(--border-radius-lg);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    padding: 0.5rem 0;
+}
+
+.dropdown-item-custom {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+    transition: var(--transition-smooth);
+}
+
+.dropdown-item-custom:hover {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--etudiant-primary);
+}
+
+/* Styles pour les formulaires dans le dashboard */
+.form-control-custom {
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    transition: var(--transition-smooth);
+}
+
+.form-control-custom:focus {
+    border-color: var(--etudiant-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-label-custom {
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+/* Styles pour les tabs personnalisés */
+.nav-tabs-custom {
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.nav-tabs-custom .nav-link {
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: #6b7280;
+    font-weight: 500;
+    padding: 1rem 1.5rem;
+    transition: var(--transition-smooth);
+}
+
+.nav-tabs-custom .nav-link:hover {
+    color: var(--etudiant-primary);
+    border-bottom-color: rgba(59, 130, 246, 0.3);
+}
+
+.nav-tabs-custom .nav-link.active {
+    color: var(--etudiant-primary);
+    border-bottom-color: var(--etudiant-primary);
+    background: none;
+}
+
+/* Optimisations pour l'impression */
+@media print {
+    .stat-card,
+    .timeline-card,
+    .activity-card,
+    .rapport-status-card,
+    .feedbacks-card,
+    .calendar-card,
+    .reclamations-card,
+    .eligibilite-card {
+        box-shadow: none;
+        border: 1px solid #e5e7eb;
+        break-inside: avoid;
+    }
+    
+    .quick-actions,
+    .btn {
+        display: none;
+    }
+    
+    .container-fluid {
+        padding: 0;
+    }
+}
