@@ -18,6 +18,46 @@ class User {
     }
     
     /**
+     * Fonction de pagination
+     */
+    private static function paginate($total, $limit, $currentPage) {
+        $totalPages = ceil($total / $limit);
+        
+        return [
+            'current_page' => $currentPage,
+            'total_pages' => $totalPages,
+            'total_items' => $total,
+            'items_per_page' => $limit,
+            'has_previous' => $currentPage > 1,
+            'has_next' => $currentPage < $totalPages,
+            'previous_page' => $currentPage > 1 ? $currentPage - 1 : null,
+            'next_page' => $currentPage < $totalPages ? $currentPage + 1 : null
+        ];
+    }
+    
+    /**
+     * Générer un numéro unique
+     */
+    private function generateUniqueNumber($prefix) {
+        $year = date('Y');
+        $randomNumber = str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
+        return $prefix . $year . $randomNumber;
+    }
+    
+    /**
+     * Hasher un mot de passe
+     */
+    private function hashPassword($password) {
+        $salt = bin2hex(random_bytes(16));
+        $hash = hash('sha256', $password . $salt);
+        
+        return [
+            'hash' => $hash,
+            'salt' => $salt
+        ];
+    }
+    
+    /**
      * Charger les données d'un utilisateur
      */
     private function loadUser($userId) {
@@ -68,10 +108,10 @@ class User {
             
             // Générer le code utilisateur
             $rolePrefix = $this->getRolePrefix($data['role_id']);
-            $codeUtilisateur = generateUniqueNumber($rolePrefix);
+            $codeUtilisateur = $this->generateUniqueNumber($rolePrefix);
             
             // Hasher le mot de passe
-            $passwordData = hashPassword($data['password']);
+            $passwordData = $this->hashPassword($data['password']);
             
             // Insérer l'utilisateur principal
             $sql = "INSERT INTO utilisateurs 
@@ -100,8 +140,7 @@ class User {
             $this->pdo->commit();
             
             // Logger la création
-            Logger::log('USER_CREATED', 'utilisateurs', $userId, 
-                       null, json_encode(['email' => $data['email'], 'role' => $data['role_id']]));
+            Logger::logUserCreation($userId, ['email' => $data['email'], 'role' => $data['role_id']]);
             
             return $userId;
             
@@ -139,8 +178,7 @@ class User {
             $this->pdo->commit();
             
             // Logger la modification
-            Logger::log('USER_UPDATED', 'utilisateurs', $userId, 
-                       json_encode($oldData), json_encode($data));
+            Logger::logUserUpdate($userId, $oldData, $data);
             
             return true;
             
@@ -172,8 +210,7 @@ class User {
             
             if ($result) {
                 // Logger la suppression
-                Logger::log('USER_DELETED', 'utilisateurs', $userId, 
-                           json_encode($user), null);
+                Logger::logUserDeletion($userId, $user);
             }
             
             return $result;
@@ -301,7 +338,7 @@ class User {
         
         return [
             'users' => $users,
-            'pagination' => paginate($total, $limit, $page)
+            'pagination' => self::paginate($total, $limit, $page)
         ];
     }
     
@@ -453,7 +490,7 @@ class User {
      * Insérer les données d'un enseignant
      */
     private function insertEnseignantData($userId, $data) {
-        $numeroEnseignant = generateUniqueNumber('ENS');
+        $numeroEnseignant = $this->generateUniqueNumber('ENS');
         
         $sql = "INSERT INTO enseignants 
                 (utilisateur_id, numero_enseignant, grade_id, fonction_id, 
@@ -479,7 +516,7 @@ class User {
      * Insérer les données d'un étudiant
      */
     private function insertEtudiantData($userId, $data) {
-        $numeroEtudiant = generateUniqueNumber('ETD');
+        $numeroEtudiant = $this->generateUniqueNumber('ETD');
         $numeroCarteEtudiant = 'CE' . date('Y') . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
         
         $sql = "INSERT INTO etudiants 
@@ -503,7 +540,7 @@ class User {
      * Insérer les données du personnel administratif
      */
     private function insertPersonnelData($userId, $data) {
-        $numeroPersonnel = generateUniqueNumber('PER');
+        $numeroPersonnel = $this->generateUniqueNumber('PER');
         
         $sql = "INSERT INTO personnel_administratif 
                 (utilisateur_id, numero_personnel, fonction_id, 
@@ -606,7 +643,7 @@ class User {
      * Mettre à jour le mot de passe
      */
     private function updatePassword($userId, $newPassword) {
-        $passwordData = hashPassword($newPassword);
+        $passwordData = $this->hashPassword($newPassword);
         
         $sql = "UPDATE utilisateurs 
                 SET mot_de_passe_hash = ?, salt = ?, date_modification = NOW() 
