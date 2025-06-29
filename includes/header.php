@@ -9,6 +9,83 @@ if (!defined('APP_NAME')) {
     require_once __DIR__ . '/../config/constants.php';
 }
 
+/**
+ * Fonction pour échapper les caractères HTML
+ */
+if (!function_exists('escape')) {
+    function escape($string) {
+        if (is_null($string)) {
+            return '';
+        }
+        return htmlspecialchars((string)$string, ENT_QUOTES, 'UTF-8');
+    }
+}
+
+/**
+ * Fonction pour générer un token CSRF
+ */
+if (!function_exists('generateCSRFToken')) {
+    function generateCSRFToken() {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        
+        if (!isset($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+        
+        return $_SESSION['csrf_token'];
+    }
+}
+
+/**
+ * Fonction pour générer l'URL d'un asset
+ */
+if (!function_exists('asset')) {
+    function asset($path) {
+        $baseUrl = rtrim(BASE_URL ?? '', '/');
+        $assetPath = ltrim($path, '/');
+        return $baseUrl . '/assets/' . $assetPath;
+    }
+}
+
+/**
+ * Fonction pour vérifier le mode maintenance
+ */
+if (!function_exists('isMaintenanceMode')) {
+    function isMaintenanceMode() {
+        return defined('MAINTENANCE_MODE') && MAINTENANCE_MODE === true;
+    }
+}
+
+/**
+ * Fonction pour générer l'URL d'une page
+ */
+if (!function_exists('page')) {
+    function page($path) {
+        $baseUrl = rtrim(BASE_URL ?? '', '/');
+        $pagePath = ltrim($path, '/');
+        return $baseUrl . '/' . $pagePath;
+    }
+}
+
+/**
+ * Définir les constantes manquantes avec des valeurs par défaut
+ */
+if (!defined('APP_NAME')) define('APP_NAME', 'Système de Validation Académique');
+if (!defined('APP_VERSION')) define('APP_VERSION', '1.0.0');
+if (!defined('UNIVERSITY_NAME')) define('UNIVERSITY_NAME', 'Université Félix Houphouët-Boigny');
+if (!defined('UNIVERSITY_SHORT_NAME')) define('UNIVERSITY_SHORT_NAME', 'UFHB');
+if (!defined('BASE_URL')) define('BASE_URL', '');
+if (!defined('MAINTENANCE_MESSAGE')) define('MAINTENANCE_MESSAGE', 'Le système est en cours de maintenance.');
+if (!defined('SESSION_TIMEOUT')) define('SESSION_TIMEOUT', 3600);
+if (!defined('MAX_FILE_SIZE')) define('MAX_FILE_SIZE', 10485760); // 10MB
+if (!defined('ALLOWED_EXTENSIONS')) {
+    define('ALLOWED_EXTENSIONS', json_encode([
+        'all' => ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png', 'gif']
+    ]));
+}
+
 // Obtenir les informations de l'utilisateur connecté
 $currentUser = getCurrentUser();
 $pageTitle = $pageTitle ?? APP_NAME;
@@ -175,13 +252,13 @@ $additionalJS = $additionalJS ?? [];
     <div class="main-wrapper">
         <?php 
         // Inclure la navbar si l'utilisateur est connecté
-        if (SessionManager::isLoggedIn()) {
+        if (class_exists('SessionManager') && SessionManager::isLoggedIn()) {
             include __DIR__ . '/navbar.php';
         }
         ?>
         
         <!-- Début du contenu principal -->
-        <main class="content-wrapper <?= !SessionManager::isLoggedIn() ? 'no-sidebar' : '' ?>" id="mainContent">
+        <main class="content-wrapper <?= (!class_exists('SessionManager') || !SessionManager::isLoggedIn()) ? 'no-sidebar' : '' ?>" id="mainContent">
             
             <?php 
             // Afficher les messages flash s'il y en a
@@ -206,7 +283,7 @@ $additionalJS = $additionalJS ?? [];
                         
                         echo "<div class='alert {$alertClass} alert-dismissible fade show' role='alert'>
                                 <i class='{$icon} me-2'></i>
-                                {$message}
+                                " . escape($message) . "
                                 <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
                               </div>";
                     }
@@ -231,7 +308,7 @@ $additionalJS = $additionalJS ?? [];
                                 </li>
                             <?php else: ?>
                                 <li class="breadcrumb-item">
-                                    <a href="<?= $item['url'] ?>"><?= escape($item['title']) ?></a>
+                                    <a href="<?= escape($item['url']) ?>"><?= escape($item['title']) ?></a>
                                 </li>
                             <?php endif; ?>
                         <?php endforeach; ?>
@@ -263,19 +340,19 @@ $additionalJS = $additionalJS ?? [];
 <script>
 // Variables JavaScript globales
 window.APP_CONFIG = {
-    name: '<?= APP_NAME ?>',
-    version: '<?= APP_VERSION ?>',
+    name: '<?= escape(APP_NAME) ?>',
+    version: '<?= escape(APP_VERSION) ?>',
     baseUrl: '<?= $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']) ?>',
     csrfToken: '<?= generateCSRFToken() ?>',
     user: <?= $currentUser ? json_encode([
-        'id' => $currentUser['id'],
-        'name' => $currentUser['name'],
-        'role' => $currentUser['role'],
-        'level' => $currentUser['niveau_acces']
+        'id' => $currentUser['utilisateur_id'] ?? $currentUser['id'] ?? null,
+        'name' => ($currentUser['prenoms'] ?? '') . ' ' . ($currentUser['nom'] ?? ''),
+        'role' => $currentUser['nom_role'] ?? $currentUser['role'] ?? null,
+        'level' => $currentUser['niveau_acces'] ?? 1
     ]) : 'null' ?>,
     sessionTimeout: <?= SESSION_TIMEOUT ?>,
     maxFileSize: <?= MAX_FILE_SIZE ?>,
-    allowedTypes: <?= json_encode(ALLOWED_EXTENSIONS['all']) ?>
+    allowedTypes: <?= ALLOWED_EXTENSIONS ?>
 };
 
 // Fonction pour afficher les notifications toast
@@ -360,7 +437,10 @@ setInterval(() => {
         .then(data => {
             if (data.token) {
                 window.APP_CONFIG.csrfToken = data.token;
-                document.querySelector('meta[name="csrf-token"]').content = data.token;
+                const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+                if (csrfMeta) {
+                    csrfMeta.content = data.token;
+                }
             }
         })
         .catch(console.error);

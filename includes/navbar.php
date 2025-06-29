@@ -5,17 +5,62 @@
  */
 
 // Vérifier que l'utilisateur est connecté
-if (!SessionManager::isLoggedIn()) {
+if (!class_exists('SessionManager') || !SessionManager::isLoggedIn()) {
     return;
 }
 
+/**
+ * Fonction pour récupérer les notifications non lues
+ */
+if (!function_exists('getUnreadNotifications')) {
+    function getUnreadNotifications($userId, $limit = 5) {
+        if (!$userId) {
+            return [];
+        }
+        
+        try {
+            if (class_exists('Database')) {
+                $pdo = Database::getInstance()->getConnection();
+                
+                $sql = "SELECT 
+                            notification_id,
+                            titre_notification,
+                            contenu_notification,
+                            lien_action,
+                            date_creation
+                        FROM notifications 
+                        WHERE utilisateur_id = ? 
+                        AND est_lu = 0 
+                        AND est_actif = 1
+                        ORDER BY date_creation DESC 
+                        LIMIT ?";
+                
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute([$userId, $limit]);
+                
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            }
+        } catch (Exception $e) {
+            error_log("Erreur lors de la récupération des notifications: " . $e->getMessage());
+        }
+        
+        return [];
+    }
+}
+
+/**
+ * Définir les constantes manquantes
+ */
+if (!defined('APP_SHORT_NAME')) define('APP_SHORT_NAME', 'SVA');
+
 $currentUser = getCurrentUser();
-$userRole = $currentUser['role'];
-$userName = $currentUser['name'];
-$userLevel = $currentUser['niveau_acces'];
+$userRole = $currentUser['nom_role'] ?? $currentUser['role'] ?? 'Utilisateur';
+$userName = trim(($currentUser['prenoms'] ?? '') . ' ' . ($currentUser['nom'] ?? '')) ?: $currentUser['email'] ?? 'Utilisateur';
+$userLevel = $currentUser['niveau_acces'] ?? 1;
+$userId = $currentUser['utilisateur_id'] ?? $currentUser['id'] ?? null;
 
 // Obtenir les notifications non lues
-$notifications = getUnreadNotifications($currentUser['id'], 5);
+$notifications = getUnreadNotifications($userId, 5);
 $notificationCount = count($notifications);
 
 // Navigation selon le rôle
@@ -24,118 +69,124 @@ $navigationItems = [];
 switch ($userRole) {
     case 'Administrateur':
         $navigationItems = [
-            ['title' => 'Dashboard', 'url' => 'pages/admin/index.php', 'icon' => 'fas fa-tachometer-alt'],
-            ['title' => 'Utilisateurs', 'url' => 'pages/admin/users/', 'icon' => 'fas fa-users', 'submenu' => [
-                ['title' => 'Liste', 'url' => 'pages/admin/users/liste.php'],
-                ['title' => 'Ajouter', 'url' => 'pages/admin/users/ajouter.php'],
-                ['title' => 'Rôles', 'url' => 'pages/admin/users/roles.php']
+            ['title' => 'Dashboard', 'url' => 'vues/admin/index.php', 'icon' => 'fas fa-tachometer-alt'],
+            ['title' => 'Utilisateurs', 'url' => 'vues/admin/users/', 'icon' => 'fas fa-users', 'submenu' => [
+                ['title' => 'Liste', 'url' => 'vues/admin/users/liste.php'],
+                ['title' => 'Ajouter', 'url' => 'vues/admin/users/ajouter.php'],
+                ['title' => 'Rôles', 'url' => 'vues/admin/users/roles.php']
             ]],
-            ['title' => 'Enseignants', 'url' => 'pages/admin/enseignants/', 'icon' => 'fas fa-chalkboard-teacher', 'submenu' => [
-                ['title' => 'Liste', 'url' => 'pages/admin/enseignants/liste.php'],
-                ['title' => 'Ajouter', 'url' => 'pages/admin/enseignants/ajouter.php']
+            ['title' => 'Enseignants', 'url' => 'vues/admin/enseignants/', 'icon' => 'fas fa-chalkboard-teacher', 'submenu' => [
+                ['title' => 'Liste', 'url' => 'vues/admin/enseignants/liste.php'],
+                ['title' => 'Ajouter', 'url' => 'vues/admin/enseignants/ajouter.php']
             ]],
-            ['title' => 'Étudiants', 'url' => 'pages/admin/etudiants/', 'icon' => 'fas fa-user-graduate', 'submenu' => [
-                ['title' => 'Liste', 'url' => 'pages/admin/etudiants/liste.php'],
-                ['title' => 'Ajouter', 'url' => 'pages/admin/etudiants/ajouter.php'],
-                ['title' => 'Imports', 'url' => 'pages/admin/etudiants/import.php']
+            ['title' => 'Étudiants', 'url' => 'vues/admin/etudiants/', 'icon' => 'fas fa-user-graduate', 'submenu' => [
+                ['title' => 'Liste', 'url' => 'vues/admin/etudiants/liste.php'],
+                ['title' => 'Ajouter', 'url' => 'vues/admin/etudiants/ajouter.php'],
+                ['title' => 'Imports', 'url' => 'vues/admin/etudiants/import.php']
             ]],
-            ['title' => 'Système', 'url' => 'pages/admin/system/', 'icon' => 'fas fa-cogs', 'submenu' => [
-                ['title' => 'Configuration', 'url' => 'pages/admin/system/config.php'],
-                ['title' => 'Logs', 'url' => 'pages/admin/system/logs.php'],
-                ['title' => 'Backup', 'url' => 'pages/admin/system/backup.php']
+            ['title' => 'Système', 'url' => 'vues/admin/system/', 'icon' => 'fas fa-cogs', 'submenu' => [
+                ['title' => 'Configuration', 'url' => 'vues/admin/system/config.php'],
+                ['title' => 'Logs', 'url' => 'vues/admin/system/logs.php'],
+                ['title' => 'Backup', 'url' => 'vues/admin/system/backup.php']
             ]]
         ];
         break;
         
     case 'Responsable Scolarité':
         $navigationItems = [
-            ['title' => 'Dashboard', 'url' => 'pages/responsable_scolarite/index.php', 'icon' => 'fas fa-tachometer-alt'],
-            ['title' => 'Étudiants', 'url' => 'pages/responsable_scolarite/etudiants/', 'icon' => 'fas fa-user-graduate', 'submenu' => [
-                ['title' => 'Gestion', 'url' => 'pages/responsable_scolarite/etudiants/gestion.php'],
-                ['title' => 'Éligibilité', 'url' => 'pages/responsable_scolarite/etudiants/eligibilite.php']
+            ['title' => 'Dashboard', 'url' => 'vues/responsable_scolarite/index.php', 'icon' => 'fas fa-tachometer-alt'],
+            ['title' => 'Étudiants', 'url' => 'vues/responsable_scolarite/etudiants/', 'icon' => 'fas fa-user-graduate', 'submenu' => [
+                ['title' => 'Gestion', 'url' => 'vues/responsable_scolarite/etudiants/gestion.php'],
+                ['title' => 'Éligibilité', 'url' => 'vues/responsable_scolarite/etudiants/eligibilite.php']
             ]],
-            ['title' => 'Notes', 'url' => 'pages/responsable_scolarite/notes/', 'icon' => 'fas fa-chart-line', 'submenu' => [
-                ['title' => 'Saisie', 'url' => 'pages/responsable_scolarite/notes/saisie.php'],
-                ['title' => 'Consultation', 'url' => 'pages/responsable_scolarite/notes/consultation.php'],
-                ['title' => 'Validation', 'url' => 'pages/responsable_scolarite/notes/validation.php']
+            ['title' => 'Notes', 'url' => 'vues/responsable_scolarite/notes/', 'icon' => 'fas fa-chart-line', 'submenu' => [
+                ['title' => 'Saisie', 'url' => 'vues/responsable_scolarite/notes/saisie.php'],
+                ['title' => 'Consultation', 'url' => 'vues/responsable_scolarite/notes/consultation.php'],
+                ['title' => 'Validation', 'url' => 'vues/responsable_scolarite/notes/validation.php']
             ]],
-            ['title' => 'Rapports', 'url' => 'pages/responsable_scolarite/rapports/', 'icon' => 'fas fa-file-alt', 'submenu' => [
-                ['title' => 'Suivi', 'url' => 'pages/responsable_scolarite/rapports/suivi.php'],
-                ['title' => 'Planification', 'url' => 'pages/responsable_scolarite/rapports/planification.php']
+            ['title' => 'Rapports', 'url' => 'vues/responsable_scolarite/rapports/', 'icon' => 'fas fa-file-alt', 'submenu' => [
+                ['title' => 'Suivi', 'url' => 'vues/responsable_scolarite/rapports/suivi.php'],
+                ['title' => 'Planification', 'url' => 'vues/responsable_scolarite/rapports/planification.php']
             ]]
         ];
         break;
         
     case 'Chargé Communication':
         $navigationItems = [
-            ['title' => 'Dashboard', 'url' => 'pages/charge_communication/index.php', 'icon' => 'fas fa-tachometer-alt'],
-            ['title' => 'Rapports', 'url' => 'pages/charge_communication/rapports/', 'icon' => 'fas fa-file-alt', 'submenu' => [
-                ['title' => 'Vérification', 'url' => 'pages/charge_communication/rapports/verification.php'],
-                ['title' => 'Validation', 'url' => 'pages/charge_communication/rapports/validation.php']
+            ['title' => 'Dashboard', 'url' => 'vues/charge_communication/index.php', 'icon' => 'fas fa-tachometer-alt'],
+            ['title' => 'Rapports', 'url' => 'vues/charge_communication/rapports/', 'icon' => 'fas fa-file-alt', 'submenu' => [
+                ['title' => 'Vérification', 'url' => 'vues/charge_communication/rapports/verification.php'],
+                ['title' => 'Validation', 'url' => 'vues/charge_communication/rapports/validation.php']
             ]],
-            ['title' => 'Commission', 'url' => 'pages/charge_communication/commission/', 'icon' => 'fas fa-users', 'submenu' => [
-                ['title' => 'Envoi', 'url' => 'pages/charge_communication/commission/envoi.php'],
-                ['title' => 'Suivi', 'url' => 'pages/charge_communication/commission/suivi.php']
+            ['title' => 'Commission', 'url' => 'vues/charge_communication/commission/', 'icon' => 'fas fa-users', 'submenu' => [
+                ['title' => 'Envoi', 'url' => 'vues/charge_communication/commission/envoi.php'],
+                ['title' => 'Suivi', 'url' => 'vues/charge_communication/commission/suivi.php']
             ]],
-            ['title' => 'Notifications', 'url' => 'pages/charge_communication/notifications.php', 'icon' => 'fas fa-bell']
+            ['title' => 'Notifications', 'url' => 'vues/charge_communication/notifications.php', 'icon' => 'fas fa-bell']
         ];
         break;
         
     case 'Commission':
         $navigationItems = [
-            ['title' => 'Dashboard', 'url' => 'pages/commission/index.php', 'icon' => 'fas fa-tachometer-alt'],
-            ['title' => 'Rapports', 'url' => 'pages/commission/rapports/', 'icon' => 'fas fa-file-alt', 'submenu' => [
-                ['title' => 'À évaluer', 'url' => 'pages/commission/rapports/evaluation.php'],
-                ['title' => 'Évalués', 'url' => 'pages/commission/rapports/evalues.php']
+            ['title' => 'Dashboard', 'url' => 'vues/commission/index.php', 'icon' => 'fas fa-tachometer-alt'],
+            ['title' => 'Rapports', 'url' => 'vues/commission/rapports/', 'icon' => 'fas fa-file-alt', 'submenu' => [
+                ['title' => 'À évaluer', 'url' => 'vues/commission/rapports/evaluation.php'],
+                ['title' => 'Évalués', 'url' => 'vues/commission/rapports/evalues.php']
             ]],
-            ['title' => 'Jurys', 'url' => 'pages/commission/jurys/', 'icon' => 'fas fa-gavel', 'submenu' => [
-                ['title' => 'Constitution', 'url' => 'pages/commission/jurys/constitution.php'],
-                ['title' => 'Planning', 'url' => 'pages/commission/jurys/planning.php']
+            ['title' => 'Jurys', 'url' => 'vues/commission/jurys/', 'icon' => 'fas fa-gavel', 'submenu' => [
+                ['title' => 'Constitution', 'url' => 'vues/commission/jurys/constitution.php'],
+                ['title' => 'Planning', 'url' => 'vues/commission/jurys/planning.php']
             ]]
         ];
         break;
         
     case 'Secrétaire':
         $navigationItems = [
-            ['title' => 'Dashboard', 'url' => 'pages/secretaire/index.php', 'icon' => 'fas fa-tachometer-alt'],
-            ['title' => 'Étudiants', 'url' => 'pages/secretaire/etudiants/', 'icon' => 'fas fa-user-graduate', 'submenu' => [
-                ['title' => 'Liste', 'url' => 'pages/secretaire/etudiants/liste.php'],
-                ['title' => 'Export', 'url' => 'pages/secretaire/etudiants/export.php']
+            ['title' => 'Dashboard', 'url' => 'vues/secretaire/index.php', 'icon' => 'fas fa-tachometer-alt'],
+            ['title' => 'Étudiants', 'url' => 'vues/secretaire/etudiants/', 'icon' => 'fas fa-user-graduate', 'submenu' => [
+                ['title' => 'Liste', 'url' => 'vues/secretaire/etudiants/liste.php'],
+                ['title' => 'Export', 'url' => 'vues/secretaire/etudiants/export.php']
             ]],
-            ['title' => 'Soutenances', 'url' => 'pages/secretaire/soutenances/', 'icon' => 'fas fa-calendar', 'submenu' => [
-                ['title' => 'Planning', 'url' => 'pages/secretaire/soutenances/planning.php'],
-                ['title' => 'Calendrier', 'url' => 'pages/secretaire/soutenances/calendrier.php']
+            ['title' => 'Soutenances', 'url' => 'vues/secretaire/soutenances/', 'icon' => 'fas fa-calendar', 'submenu' => [
+                ['title' => 'Planning', 'url' => 'vues/secretaire/soutenances/planning.php'],
+                ['title' => 'Calendrier', 'url' => 'vues/secretaire/soutenances/calendrier.php']
             ]]
         ];
         break;
         
     case 'Enseignant':
         $navigationItems = [
-            ['title' => 'Dashboard', 'url' => 'pages/enseignant/index.php', 'icon' => 'fas fa-tachometer-alt'],
-            ['title' => 'Encadrements', 'url' => 'pages/enseignant/encadrements/', 'icon' => 'fas fa-users', 'submenu' => [
-                ['title' => 'Mes étudiants', 'url' => 'pages/enseignant/encadrements/etudiants.php'],
-                ['title' => 'Rapports', 'url' => 'pages/enseignant/encadrements/rapports.php']
+            ['title' => 'Dashboard', 'url' => 'vues/enseignant/index.php', 'icon' => 'fas fa-tachometer-alt'],
+            ['title' => 'Encadrements', 'url' => 'vues/enseignant/encadrements/', 'icon' => 'fas fa-users', 'submenu' => [
+                ['title' => 'Mes étudiants', 'url' => 'vues/enseignant/encadrements/etudiants.php'],
+                ['title' => 'Rapports', 'url' => 'vues/enseignant/encadrements/rapports.php']
             ]],
-            ['title' => 'Jurys', 'url' => 'pages/enseignant/jurys/', 'icon' => 'fas fa-gavel', 'submenu' => [
-                ['title' => 'Mes jurys', 'url' => 'pages/enseignant/jurys/mes_jurys.php'],
-                ['title' => 'Évaluations', 'url' => 'pages/enseignant/jurys/evaluations.php']
+            ['title' => 'Jurys', 'url' => 'vues/enseignant/jurys/', 'icon' => 'fas fa-gavel', 'submenu' => [
+                ['title' => 'Mes jurys', 'url' => 'vues/enseignant/jurys/mes_jurys.php'],
+                ['title' => 'Évaluations', 'url' => 'vues/enseignant/jurys/evaluations.php']
             ]]
         ];
         break;
         
     case 'Étudiant':
         $navigationItems = [
-            ['title' => 'Dashboard', 'url' => 'pages/etudiant/index.php', 'icon' => 'fas fa-tachometer-alt'],
-            ['title' => 'Mon Rapport', 'url' => 'pages/etudiant/rapport/', 'icon' => 'fas fa-file-alt', 'submenu' => [
-                ['title' => 'Rédaction', 'url' => 'pages/etudiant/rapport/redaction.php'],
-                ['title' => 'Soumission', 'url' => 'pages/etudiant/rapport/soumission.php'],
-                ['title' => 'Historique', 'url' => 'pages/etudiant/rapport/historique.php']
+            ['title' => 'Dashboard', 'url' => 'vues/etudiant/index.php', 'icon' => 'fas fa-tachometer-alt'],
+            ['title' => 'Mon Rapport', 'url' => 'vues/etudiant/rapport/', 'icon' => 'fas fa-file-alt', 'submenu' => [
+                ['title' => 'Rédaction', 'url' => 'vues/etudiant/rapport/redaction.php'],
+                ['title' => 'Soumission', 'url' => 'vues/etudiant/rapport/soumission.php'],
+                ['title' => 'Historique', 'url' => 'vues/etudiant/rapport/historique.php']
             ]],
-            ['title' => 'Réclamations', 'url' => 'pages/etudiant/reclamations/', 'icon' => 'fas fa-exclamation-circle', 'submenu' => [
-                ['title' => 'Soumettre', 'url' => 'pages/etudiant/reclamations/soumettre.php'],
-                ['title' => 'Suivi', 'url' => 'pages/etudiant/reclamations/suivi.php']
+            ['title' => 'Réclamations', 'url' => 'vues/etudiant/reclamations/', 'icon' => 'fas fa-exclamation-circle', 'submenu' => [
+                ['title' => 'Soumettre', 'url' => 'vues/etudiant/reclamations/soumettre.php'],
+                ['title' => 'Suivi', 'url' => 'vues/etudiant/reclamations/suivi.php']
             ]],
-            ['title' => 'Ma Soutenance', 'url' => 'pages/etudiant/soutenance.php', 'icon' => 'fas fa-presentation']
+            ['title' => 'Ma Soutenance', 'url' => 'vues/etudiant/soutenance.php', 'icon' => 'fas fa-presentation']
+        ];
+        break;
+        
+    default:
+        $navigationItems = [
+            ['title' => 'Dashboard', 'url' => 'vues/dashboard.php', 'icon' => 'fas fa-tachometer-alt']
         ];
         break;
 }
@@ -200,7 +251,7 @@ switch ($userRole) {
                             </div>
                         <?php else: ?>
                             <?php foreach ($notifications as $notification): ?>
-                                <a href="<?= $notification['lien_action'] ?: '#' ?>" class="dropdown-item notification-item" data-id="<?= $notification['notification_id'] ?>">
+                                <a href="<?= escape($notification['lien_action'] ?: '#') ?>" class="dropdown-item notification-item" data-id="<?= $notification['notification_id'] ?>">
                                     <div class="d-flex">
                                         <div class="flex-shrink-0">
                                             <i class="fas fa-circle text-primary" style="font-size: 0.5rem;"></i>
@@ -286,7 +337,7 @@ switch ($userRole) {
                             <ul class="nav nav-submenu">
                                 <?php foreach ($item['submenu'] as $subitem): ?>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="<?= $subitem['url'] ?>">
+                                        <a class="nav-link" href="<?= escape($subitem['url']) ?>">
                                             <span class="nav-text"><?= escape($subitem['title']) ?></span>
                                         </a>
                                     </li>
@@ -295,7 +346,7 @@ switch ($userRole) {
                         </div>
                     <?php else: ?>
                         <!-- Item simple -->
-                        <a class="nav-link d-flex align-items-center" href="<?= $item['url'] ?>">
+                        <a class="nav-link d-flex align-items-center" href="<?= escape($item['url']) ?>">
                             <i class="<?= $item['icon'] ?> nav-icon"></i>
                             <span class="nav-text"><?= escape($item['title']) ?></span>
                         </a>
@@ -490,7 +541,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (sidebarCollapseBtn) {
         sidebarCollapseBtn.addEventListener('click', function() {
             sidebar.classList.toggle('collapsed');
-            mainContent.classList.toggle('sidebar-collapsed');
+            if (mainContent) {
+                mainContent.classList.toggle('sidebar-collapsed');
+            }
             
             // Rotate icon
             const icon = this.querySelector('i');
@@ -509,7 +562,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
     if (isCollapsed) {
         sidebar.classList.add('collapsed');
-        mainContent.classList.add('sidebar-collapsed');
+        if (mainContent) {
+            mainContent.classList.add('sidebar-collapsed');
+        }
         const icon = sidebarCollapseBtn?.querySelector('i');
         if (icon) {
             icon.classList.replace('fa-angle-left', 'fa-angle-right');
@@ -521,7 +576,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const navLinks = document.querySelectorAll('.nav-sidebar .nav-link');
     
     navLinks.forEach(link => {
-        if (link.getAttribute('href') && currentPath.includes(link.getAttribute('href'))) {
+        const href = link.getAttribute('href');
+        if (href && href !== '#' && currentPath.includes(href)) {
             link.classList.add('active');
             
             // Expand parent if it's a submenu
@@ -552,6 +608,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Functions for notifications
 function markNotificationRead(notificationId) {
+    if (!window.APP_CONFIG || !window.APP_CONFIG.csrfToken) {
+        console.error('Configuration manquante pour les notifications');
+        return;
+    }
+    
     fetch('api/notifications.php', {
         method: 'POST',
         headers: {
@@ -580,55 +641,5 @@ function markNotificationRead(notificationId) {
 }
 
 function markAllNotificationsRead() {
-    fetch('api/notifications.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-Token': window.APP_CONFIG.csrfToken
-        },
-        body: JSON.stringify({
-            action: 'mark_all_read'
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Update all notification items
-            document.querySelectorAll('.notification-item').forEach(item => {
-                item.classList.add('read');
-            });
-            
-            // Hide badge
-            const badge = document.querySelector('.badge');
-            if (badge) {
-                badge.style.display = 'none';
-            }
-            
-            showToast('Toutes les notifications ont été marquées comme lues', 'success');
-        }
-    })
-    .catch(console.error);
-}
-
-function updateNotificationBadge() {
-    fetch('api/notifications.php?action=count')
-        .then(response => response.json())
-        .then(data => {
-            const badge = document.querySelector('.badge');
-            if (data.count > 0) {
-                if (badge) {
-                    badge.textContent = data.count > 9 ? '9+' : data.count;
-                    badge.style.display = 'inline-block';
-                }
-            } else {
-                if (badge) {
-                    badge.style.display = 'none';
-                }
-            }
-        })
-        .catch(console.error);
-}
-
-// Update notifications every 5 minutes
-setInterval(updateNotificationBadge, 5 * 60 * 1000);
-</script>
+    if (!window.APP_CONFIG || !window.APP_CONFIG.csrfToken) {
+        console.error('Configuration manquante pour les notifications');}}

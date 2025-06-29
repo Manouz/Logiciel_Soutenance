@@ -154,6 +154,7 @@ define('FONCTION_ENSEIGNANT', 8);
 define('FONCTION_SECRETAIRE', 9);
 
 // Configuration de l'année académique
+// Dans constants.php, avant la ligne 157
 define('CURRENT_ACADEMIC_YEAR', getCurrentAcademicYear());
 define('ACADEMIC_YEAR_START_MONTH', 9); // Septembre
 define('ACADEMIC_YEAR_END_MONTH', 8);   // Août
@@ -302,7 +303,7 @@ define('CACHE_PREFIX', 'sva_');
 function getCurrentAcademicYear() {
     $currentYear = date('Y');
     $currentMonth = date('n');
-    
+    define(ACADEMIC_YEAR_START_MONTH,9);
     if ($currentMonth >= ACADEMIC_YEAR_START_MONTH) {
         return $currentYear . '-' . ($currentYear + 1);
     } else {

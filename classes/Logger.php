@@ -19,6 +19,54 @@ class Logger {
     }
     
     /**
+     * Fonction de pagination
+     */
+    private static function paginate($total, $limit, $currentPage) {
+        $totalPages = ceil($total / $limit);
+        
+        return [
+            'current_page' => $currentPage,
+            'total_pages' => $totalPages,
+            'total_items' => $total,
+            'items_per_page' => $limit,
+            'has_previous' => $currentPage > 1,
+            'has_next' => $currentPage < $totalPages,
+            'previous_page' => $currentPage > 1 ? $currentPage - 1 : null,
+            'next_page' => $currentPage < $totalPages ? $currentPage + 1 : null
+        ];
+    }
+    
+    /**
+     * Fonction d'export CSV privée
+     */
+    private static function generateCSVFile($data, $filename, $headers = []) {
+        // Définir les en-têtes pour le téléchargement
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Expires: 0');
+        
+        // Ouvrir le flux de sortie
+        $output = fopen('php://output', 'w');
+        
+        // Ajouter le BOM UTF-8 pour Excel
+        fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
+        
+        // Écrire les en-têtes si fournis
+        if (!empty($headers)) {
+            fputcsv($output, $headers, ';');
+        }
+        
+        // Écrire les données
+        foreach ($data as $row) {
+            fputcsv($output, $row, ';');
+        }
+        
+        fclose($output);
+        exit();
+    }
+    
+    /**
      * Enregistrer un log d'audit
      * 
      * @param string $typeAction Type d'action (CREATE, UPDATE, DELETE, LOGIN, etc.)
@@ -316,14 +364,14 @@ class Logger {
             
             return [
                 'logs' => $logs,
-                'pagination' => paginate($total, $limit, $page)
+                'pagination' => self::paginate($total, $limit, $page)
             ];
             
         } catch (Exception $e) {
             error_log("Erreur lors de la récupération des logs: " . $e->getMessage());
             return [
                 'logs' => [],
-                'pagination' => paginate(0, $limit, $page)
+                'pagination' => self::paginate(0, $limit, $page)
             ];
         }
     }
@@ -458,7 +506,7 @@ class Logger {
             ];
         }
         
-        exportToCSV($csvData, $filename, $headers);
+        self::generateCSVFile($csvData, $filename, $headers);
         
         // Log de l'export
         self::log(

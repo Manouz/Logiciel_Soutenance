@@ -1,4 +1,161 @@
+<?php
+/**
+ * Fonction pour formater les dates en français
+ */
+if (!function_exists('formatDateFR')) {
+    function formatDateFR($date, $format = 'd/m/Y H:i') {
+        if (empty($date)) return '';
+        
+        // Si c'est un timestamp
+        if (is_numeric($date)) {
+            $dateTime = new DateTime();
+            $dateTime->setTimestamp($date);
+        } else {
+            // Si c'est une chaîne de date
+            try {
+                $dateTime = new DateTime($date);
+            } catch (Exception $e) {
+                return $date; // Retourner la date originale si elle ne peut pas être parsée
+            }
+        }
+        
+        // Traductions des jours et mois en français
+        $jours = [
+            'Monday' => 'Lundi',
+            'Tuesday' => 'Mardi', 
+            'Wednesday' => 'Mercredi',
+            'Thursday' => 'Jeudi',
+            'Friday' => 'Vendredi',
+            'Saturday' => 'Samedi',
+            'Sunday' => 'Dimanche'
+        ];
+        
+        $mois = [
+            'January' => 'Janvier',
+            'February' => 'Février',
+            'March' => 'Mars',
+            'April' => 'Avril',
+            'May' => 'Mai',
+            'June' => 'Juin',
+            'July' => 'Juillet',
+            'August' => 'Août',
+            'September' => 'Septembre',
+            'October' => 'Octobre',
+            'November' => 'Novembre',
+            'December' => 'Décembre'
+        ];
+        
+        // Formater la date
+        $dateFormatted = $dateTime->format($format);
+        
+        // Remplacer les noms anglais par français si nécessaire
+        foreach ($jours as $en => $fr) {
+            $dateFormatted = str_replace($en, $fr, $dateFormatted);
+        }
+        
+        foreach ($mois as $en => $fr) {
+            $dateFormatted = str_replace($en, $fr, $dateFormatted);
+        }
+        
+        return $dateFormatted;
+    }
+}
 
+/**
+ * Fonction pour vérifier les permissions (si elle n'existe pas déjà)
+ */
+if (!function_exists('hasPermission')) {
+    function hasPermission($level) {
+        // Vérifier si l'utilisateur est connecté
+        if (!class_exists('SessionManager') || !SessionManager::isLoggedIn()) {
+            return false;
+        }
+        
+        // Récupérer l'utilisateur actuel depuis la session
+        $currentUser = getCurrentUser();
+        
+        // Vérifier le niveau d'accès
+        return isset($currentUser['niveau_acces']) && $currentUser['niveau_acces'] >= $level;
+    }
+}
+
+/**
+ * Fonction pour récupérer l'utilisateur actuel (si elle n'existe pas déjà)
+ */
+if (!function_exists('getCurrentUser')) {
+    function getCurrentUser() {
+        // Vérifier si on a une session active
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            return null;
+        }
+        
+        // Récupérer les données de l'utilisateur depuis la session
+        if (isset($_SESSION['user_data'])) {
+            return $_SESSION['user_data'];
+        }
+        
+        // Alternative: récupérer depuis user_id en session
+        if (isset($_SESSION['user_id'])) {
+            try {
+                // Si on a une classe User disponible
+                if (class_exists('User')) {
+                    $user = new User($_SESSION['user_id']);
+                    return $user->getCurrentUserData();
+                }
+                
+                // Sinon, récupérer directement depuis la base de données
+                if (class_exists('Database')) {
+                    $pdo = Database::getInstance()->getConnection();
+                    $sql = "SELECT 
+                                u.utilisateur_id,
+                                u.code_utilisateur,
+                                u.email,
+                                u.role_id,
+                                u.statut_id,
+                                u.derniere_connexion,
+                                r.nom_role,
+                                r.niveau_acces,
+                                s.libelle_statut,
+                                ip.nom,
+                                ip.prenoms,
+                                ip.telephone
+                            FROM utilisateurs u
+                            INNER JOIN roles r ON u.role_id = r.role_id
+                            INNER JOIN statuts s ON u.statut_id = s.statut_id
+                            LEFT JOIN informations_personnelles ip ON u.utilisateur_id = ip.utilisateur_id
+                            WHERE u.utilisateur_id = ? AND u.est_actif = 1";
+                    
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute([$_SESSION['user_id']]);
+                    $userData = $stmt->fetch(PDO::FETCH_ASSOC);
+                    
+                    // Sauvegarder en session pour les prochaines utilisations
+                    if ($userData) {
+                        $_SESSION['user_data'] = $userData;
+                    }
+                    
+                    return $userData;
+                }
+            } catch (Exception $e) {
+                error_log("Erreur lors de la récupération de l'utilisateur: " . $e->getMessage());
+            }
+        }
+        
+        return null;
+    }
+}
+
+/**
+ * Fonction pour générer l'URL d'un asset
+ */
+if (!function_exists('asset')) {
+    function asset($path) {
+        $baseUrl = rtrim(BASE_URL ?? '', '/');
+        $assetPath = ltrim($path, '/');
+        return $baseUrl . '/assets/' . $assetPath;
+    }
+}
+?>
 </main>
         <!-- Fin du contenu principal -->
         
@@ -8,8 +165,8 @@
                 <div class="row align-items-center">
                     <div class="col-md-6">
                         <div class="text-muted small">
-                            © <?= date('Y') ?> <?= UNIVERSITY_NAME ?><br>
-                            <?= APP_NAME ?> - Version <?= APP_VERSION ?>
+                            © <?= date('Y') ?> <?= UNIVERSITY_NAME ?? 'Université Félix Houphouët-Boigny' ?><br>
+                            <?= APP_NAME ?? 'Système de Validation Académique' ?> - Version <?= APP_VERSION ?? '1.0.0' ?>
                         </div>
                     </div>
                     <div class="col-md-6 text-md-end">
@@ -17,14 +174,14 @@
                             <span class="text-muted small me-3">
                                 <i class="fas fa-clock me-1"></i>
                                 Dernière connexion: 
-                                <?php if ($currentUser && $currentUser['login_time']): ?>
-                                    <?= formatDateFR(date('Y-m-d H:i:s', $currentUser['login_time']), 'd/m/Y à H:i') ?>
+                                <?php if (isset($currentUser) && $currentUser && isset($currentUser['login_time'])): ?>
+                                    <?= formatDateFR($currentUser['login_time'], 'd/m/Y à H:i') ?>
                                 <?php else: ?>
                                     Inconnue
                                 <?php endif; ?>
                             </span>
                             
-                            <?php if (SessionManager::isLoggedIn()): ?>
+                            <?php if (class_exists('SessionManager') && SessionManager::isLoggedIn()): ?>
                                 <div class="session-indicator">
                                     <span class="badge bg-success small">
                                         <i class="fas fa-circle pulse"></i> En ligne
@@ -36,7 +193,7 @@
                 </div>
                 
                 <!-- Informations techniques (visible uniquement en mode debug) -->
-                <?php if (DEBUG_MODE && hasPermission(ACCESS_LEVEL_ADMIN)): ?>
+                <?php if (defined('DEBUG_MODE') && DEBUG_MODE && hasPermission(ACCESS_LEVEL_ADMIN ?? 10)): ?>
                     <div class="row mt-2">
                         <div class="col-12">
                             <div class="debug-info small text-muted">
@@ -98,11 +255,20 @@
     <script src="<?= asset('js/common/global-functions.js') ?>"></script>
     
     <!-- Scripts spécifiques additionnels -->
-    <?php foreach ($additionalJS as $jsFile): ?>
-        <script src="<?= asset('js/' . $jsFile) ?>"></script>
-    <?php endforeach; ?>
+    <?php if (isset($additionalJS) && is_array($additionalJS)): ?>
+        <?php foreach ($additionalJS as $jsFile): ?>
+            <script src="<?= asset('js/' . $jsFile) ?>"></script>
+        <?php endforeach; ?>
+    <?php endif; ?>
     
     <script>
+    // Configuration globale de l'application
+    window.APP_CONFIG = {
+        csrfToken: '<?= $_SESSION['csrf_token'] ?? bin2hex(random_bytes(32)) ?>',
+        maxFileSize: <?= defined('MAX_FILE_SIZE') ? MAX_FILE_SIZE : 10485760 ?>, // 10MB par défaut
+        allowedTypes: <?= json_encode(defined('ALLOWED_FILE_TYPES') ? ALLOWED_FILE_TYPES : ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png']) ?>
+    };
+    
     // Fonctions globales supplémentaires
     
     // Modal de confirmation générique
@@ -141,6 +307,50 @@
         if (modal) {
             modal.hide();
         }
+    }
+    
+    // Fonction toast (si elle n'existe pas déjà)
+    function showToast(message, type = 'info', duration = 5000) {
+        // Créer le container de toasts s'il n'existe pas
+        let toastContainer = document.querySelector('.toast-container');
+        if (!toastContainer) {
+            toastContainer = document.createElement('div');
+            toastContainer.className = 'toast-container position-fixed top-0 end-0 p-3';
+            document.body.appendChild(toastContainer);
+        }
+        
+        // Créer le toast
+        const toastId = 'toast-' + Date.now();
+        const toastHtml = `
+            <div id="${toastId}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <i class="fas fa-circle text-${type} me-2"></i>
+                    <strong class="me-auto">Notification</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                </div>
+                <div class="toast-body">${message}</div>
+            </div>
+        `;
+        
+        toastContainer.insertAdjacentHTML('beforeend', toastHtml);
+        
+        const toastElement = document.getElementById(toastId);
+        const toast = new bootstrap.Toast(toastElement, { delay: duration });
+        
+        // Supprimer le toast après qu'il soit caché
+        toastElement.addEventListener('hidden.bs.toast', function() {
+            this.remove();
+        });
+        
+        toast.show();
+    }
+    
+    // Fonction hideLoader (si elle n'existe pas déjà)
+    function hideLoader() {
+        const loaders = document.querySelectorAll('.loader, .spinner, .loading');
+        loaders.forEach(loader => {
+            loader.style.display = 'none';
+        });
     }
     
     // Gestion des erreurs AJAX globales
@@ -274,9 +484,9 @@
     }
     
     // Session timeout warning
-    <?php if (SessionManager::isLoggedIn()): ?>
+    <?php if (class_exists('SessionManager') && SessionManager::isLoggedIn()): ?>
     let sessionWarningShown = false;
-    const sessionTimeout = <?= SESSION_TIMEOUT ?> * 1000; // Convert to milliseconds
+    const sessionTimeout = <?= defined('SESSION_TIMEOUT') ? SESSION_TIMEOUT : 3600 ?> * 1000; // Convert to milliseconds
     const warningTime = sessionTimeout - (5 * 60 * 1000); // 5 minutes before expiry
     
     setTimeout(function() {
@@ -535,7 +745,7 @@
     });
     
     // Performance monitoring (en mode debug uniquement)
-    <?php if (DEBUG_MODE): ?>
+    <?php if (defined('DEBUG_MODE') && DEBUG_MODE): ?>
     window.addEventListener('load', function() {
         if (window.performance && window.performance.timing) {
             const timing = window.performance.timing;
@@ -552,8 +762,8 @@
     <style>
     /* Styles additionnels pour le footer et les composants */
     .footer {
-        margin-left: var(--sidebar-width);
-        transition: var(--transition);
+        margin-left: var(--sidebar-width, 250px);
+        transition: var(--transition, all 0.3s ease);
     }
     
     .footer.sidebar-collapsed {
@@ -577,7 +787,7 @@
     }
     
     .drag-over {
-        border: 2px dashed var(--primary-color) !important;
+        border: 2px dashed var(--primary-color, #1a5490) !important;
         background-color: rgba(26, 84, 144, 0.1) !important;
     }
     
@@ -590,23 +800,23 @@
     
     /* Styles pour les indicateurs de validation */
     .is-valid {
-        border-color: var(--success-color) !important;
+        border-color: var(--success-color, #28a745) !important;
     }
     
     .is-invalid {
-        border-color: var(--danger-color) !important;
+        border-color: var(--danger-color, #dc3545) !important;
     }
     
     .invalid-feedback {
         display: block;
-        color: var(--danger-color);
+        color: var(--danger-color, #dc3545);
         font-size: 0.875rem;
         margin-top: 0.25rem;
     }
     
     .valid-feedback {
         display: block;
-        color: var(--success-color);
+        color: var(--success-color, #28a745);
         font-size: 0.875rem;
         margin-top: 0.25rem;
     }
@@ -624,41 +834,4 @@
         margin-top: 0;
     }
     
-    /* Animation pour les toasts */
-    .toast {
-        animation: slideInRight 0.3s ease-out;
-    }
-    
-    @keyframes slideInRight {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-    
-    /* Responsive adjustments */
-    @media (max-width: 576px) {
-        .toast-container {
-            right: 10px;
-            left: 10px;
-        }
-        
-        .toast {
-            margin-bottom: 0.5rem;
-        }
-    }
-    </style>
-
-</body>
-</html>
-
-<?php
-// Nettoyer les buffers de sortie si nécessaire
-if (ob_get_level()) {
-    ob_end_flush();
-}
-?>
+    /* Animation pour les to
