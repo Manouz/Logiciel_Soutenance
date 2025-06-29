@@ -23,7 +23,9 @@ class Database {
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES => false,
-            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci"
+            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci",
+            PDO::ATTR_PERSISTENT => false,
+            PDO::ATTR_TIMEOUT => 30
         ];
         
         try {
@@ -128,6 +130,39 @@ class Database {
         $sql = "DESCRIBE $tableName";
         return $this->fetchAll($sql);
     }
+    
+    /**
+     * Compter les enregistrements
+     */
+    public function count($table, $conditions = '', $params = []) {
+        $sql = "SELECT COUNT(*) as total FROM $table";
+        if ($conditions) {
+            $sql .= " WHERE $conditions";
+        }
+        $result = $this->fetch($sql, $params);
+        return $result['total'] ?? 0;
+    }
+    
+    /**
+     * Vérifier l'existence d'un enregistrement
+     */
+    public function exists($table, $conditions, $params = []) {
+        return $this->count($table, $conditions, $params) > 0;
+    }
+    
+    /**
+     * Obtenir le dernier ID inséré
+     */
+    public function getLastInsertId() {
+        return $this->connection->lastInsertId();
+    }
+    
+    /**
+     * Échapper les noms de colonnes/tables
+     */
+    public function escapeIdentifier($identifier) {
+        return '`' . str_replace('`', '``', $identifier) . '`';
+    }
 }
 
 /**
@@ -137,6 +172,10 @@ class SessionManager {
     
     public static function start() {
         if (session_status() === PHP_SESSION_NONE) {
+            // Configuration sécurisée des sessions
+            ini_set('session.cookie_httponly', 1);
+            ini_set('session.cookie_secure', isset($_SERVER['HTTPS']));
+            ini_set('session.use_strict_mode', 1);
             session_start();
         }
     }
@@ -171,6 +210,11 @@ class SessionManager {
         return $_SESSION['user_email'] ?? '';
     }
     
+    public static function getUserCode() {
+        self::start();
+        return $_SESSION['user_code'] ?? '';
+    }
+    
     public static function hasRole($role) {
         $roles = self::getUserRoles();
         return in_array($role, $roles);
@@ -179,14 +223,32 @@ class SessionManager {
     public static function setUserData($userData) {
         self::start();
         $_SESSION['user_id'] = $userData['utilisateur_id'];
+        $_SESSION['user_code'] = $userData['code_utilisateur'];
         $_SESSION['user_email'] = $userData['email'];
         $_SESSION['user_name'] = $userData['nom'] . ' ' . $userData['prenoms'];
         $_SESSION['user_role'] = $userData['role_principal'];
-        $_SESSION['user_roles'] = $userData['tous_roles'] ?? [];
+        $_SESSION['user_roles'] = $userData['tous_roles'] ?? [$userData['role_principal']];
         $_SESSION['login_time'] = time();
+        $_SESSION['last_activity'] = time();
+        
+        // Régénérer l'ID de session pour la sécurité
+        self::regenerateId();
         
         // Log de connexion
         self::logUserAction('LOGIN', 'Connexion réussie');
+    }
+    
+    public static function updateLastActivity() {
+        self::start();
+        $_SESSION['last_activity'] = time();
+    }
+    
+    public static function isSessionExpired($timeout = 3600) {
+        self::start();
+        if (isset($_SESSION['last_activity'])) {
+            return (time() - $_SESSION['last_activity']) > $timeout;
+        }
+        return true;
     }
     
     public static function destroy() {
@@ -195,8 +257,19 @@ class SessionManager {
         // Log de déconnexion
         self::logUserAction('LOGOUT', 'Déconnexion');
         
+        // Détruire toutes les données de session
+        $_SESSION = array();
+        
+        // Détruire le cookie de session
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000,
+                $params["path"], $params["domain"],
+                $params["secure"], $params["httponly"]
+            );
+        }
+        
         session_destroy();
-        session_unset();
     }
     
     public static function regenerateId() {
@@ -225,168 +298,325 @@ class SessionManager {
 }
 
 /**
- * Constantes globales
+ * Classe d'authentification
  */
-define('BASE_URL', '/validation_academique/');
-define('ASSETS_URL', BASE_URL . 'assets/');
-define('PAGES_URL', BASE_URL . 'pages/');
-define('API_URL', BASE_URL . 'api/');
-define('UPLOAD_PATH', __DIR__ . '/../assets/uploads/');
-define('MAX_FILE_SIZE', 50 * 1024 * 1024); // 50MB
-define('ALLOWED_FILE_TYPES', ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png']);
-
-// Configuration de l'application
-define('APP_NAME', 'Système de Validation Académique');
-define('APP_VERSION', '1.0.0');
-define('UNIVERSITY_NAME', 'Université Félix Houphouët-Boigny de Cocody');
-define('UNIVERSITY_SHORT', 'UFHB Cocody');
-
-// Rôles utilisateurs
-define('ROLE_ADMIN', 'Administrateur');
-define('ROLE_RESPONSABLE_SCOLARITE', 'Responsable Scolarité');
-define('ROLE_CHARGE_COMMUNICATION', 'Chargé Communication');
-define('ROLE_COMMISSION', 'Commission');
-define('ROLE_SECRETAIRE', 'Secrétaire');
-define('ROLE_ENSEIGNANT', 'Enseignant');
-define('ROLE_PERSONNEL_ADMIN', 'Personnel Administratif');
-define('ROLE_ETUDIANT', 'Étudiant');
-
-// Statuts
-define('STATUT_ACTIF', 1);
-define('STATUT_INACTIF', 2);
-define('STATUT_BLOQUE', 3);
-define('STATUT_SUSPENDU', 4);
-
-// Statuts des étudiants
-define('ETUDIANT_ELIGIBLE', 5);
-define('ETUDIANT_NON_ELIGIBLE', 6);
-define('ETUDIANT_EN_ATTENTE', 7);
-
-// Statuts des rapports
-define('RAPPORT_BROUILLON', 8);
-define('RAPPORT_DEPOSE', 9);
-define('RAPPORT_EN_VERIFICATION', 10);
-define('RAPPORT_VALIDE', 11);
-define('RAPPORT_REJETE', 12);
-define('RAPPORT_EN_REVISION', 13);
-
-// Statuts des soutenances
-define('SOUTENANCE_PROGRAMMEE', 14);
-define('SOUTENANCE_CONFIRMEE', 15);
-define('SOUTENANCE_REPORTEE', 16);
-define('SOUTENANCE_TERMINEE', 17);
-define('SOUTENANCE_ANNULEE', 18);
-
-// Statuts des règlements
-define('REGLEMENT_PAYE', 19);
-define('REGLEMENT_PARTIEL', 20);
-define('REGLEMENT_NON_PAYE', 21);
-define('REGLEMENT_ECHU', 22);
-
-// Statuts des réclamations
-define('RECLAMATION_OUVERTE', 23);
-define('RECLAMATION_EN_COURS', 24);
-define('RECLAMATION_RESOLUE', 25);
-define('RECLAMATION_FERMEE', 26);
-
-// Priorités
-define('PRIORITE_BASSE', 27);
-define('PRIORITE_NORMALE', 28);
-define('PRIORITE_HAUTE', 29);
-define('PRIORITE_URGENTE', 30);
-
-/**
- * Fonctions utilitaires
- */
-function sanitizeInput($input) {
-    if (is_array($input)) {
-        return array_map('sanitizeInput', $input);
-    }
-    return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
-}
-
-function validateEmail($email) {
-    return filter_var($email, FILTER_VALIDATE_EMAIL);
-}
-
-function generateToken($length = 32) {
-    return bin2hex(random_bytes($length));
-}
-
-function formatDate($date, $format = 'd/m/Y') {
-    if (empty($date)) return '';
-    return date($format, strtotime($date));
-}
-
-function formatDateTime($datetime, $format = 'd/m/Y H:i') {
-    if (empty($datetime)) return '';
-    return date($format, strtotime($datetime));
-}
-
-function generateUniqueCode($prefix = '', $length = 8) {
-    return $prefix . strtoupper(bin2hex(random_bytes($length / 2)));
-}
-
-function calculateAge($birthdate) {
-    if (empty($birthdate)) return null;
-    $diff = date_diff(date_create($birthdate), date_create('today'));
-    return $diff->y;
-}
-
-function timeAgo($datetime) {
-    if (empty($datetime)) return '';
-    $time = time() - strtotime($datetime);
+class Auth {
+    private $db;
     
-    if ($time < 60) return 'À l\'instant';
-    if ($time < 3600) return floor($time/60) . ' min';
-    if ($time < 86400) return floor($time/3600) . ' h';
-    if ($time < 2592000) return floor($time/86400) . ' j';
-    if ($time < 31536000) return floor($time/2592000) . ' mois';
+    public function __construct() {
+        $this->db = Database::getInstance();
+    }
     
-    return date('d/m/Y', strtotime($datetime));
-}
-
-function formatFileSize($bytes) {
-    if ($bytes >= 1073741824) {
-        return number_format($bytes / 1073741824, 2) . ' GB';
-    } elseif ($bytes >= 1048576) {
-        return number_format($bytes / 1048576, 2) . ' MB';
-    } elseif ($bytes >= 1024) {
-        return number_format($bytes / 1024, 2) . ' KB';
-    } else {
-        return $bytes . ' bytes';
+    /**
+     * Authentifier un utilisateur
+     */
+    public function authenticate($email, $password) {
+        // Validation des entrées
+        if (empty($email) || empty($password)) {
+            return [
+                'success' => false,
+                'message' => 'Email et mot de passe requis'
+            ];
+        }
+        
+        // Vérifier si le compte est bloqué
+        $blockInfo = $this->checkAccountBlock($email);
+        if ($blockInfo['blocked']) {
+            return [
+                'success' => false,
+                'message' => $blockInfo['message'],
+                'locked' => true
+            ];
+        }
+        
+        // Récupérer l'utilisateur
+        $user = $this->getUserByEmail($email);
+        
+        if (!$user) {
+            $this->logFailedAttempt($email, 'Utilisateur inexistant');
+            return [
+                'success' => false,
+                'message' => 'Email ou mot de passe incorrect'
+            ];
+        }
+        
+        // Vérifier le mot de passe
+        $passwordHash = hash('sha256', $password . $user['salt']);
+        
+        if ($passwordHash !== $user['mot_de_passe_hash']) {
+            $this->handleFailedLogin($user['utilisateur_id'], $email);
+            return [
+                'success' => false,
+                'message' => 'Email ou mot de passe incorrect'
+            ];
+        }
+        
+        // Vérifier si l'utilisateur est actif
+        if (!$user['est_actif']) {
+            return [
+                'success' => false,
+                'message' => 'Compte désactivé. Contactez l\'administrateur'
+            ];
+        }
+        
+        // Vérifier le statut du compte
+        if ($user['statut_code'] === 'BLOQUE') {
+            return [
+                'success' => false,
+                'message' => 'Compte bloqué. Contactez l\'administrateur'
+            ];
+        }
+        
+        if ($user['statut_code'] === 'SUSPENDU') {
+            return [
+                'success' => false,
+                'message' => 'Compte suspendu temporairement'
+            ];
+        }
+        
+        // Connexion réussie
+        $this->handleSuccessfulLogin($user['utilisateur_id']);
+        
+        return [
+            'success' => true,
+            'message' => 'Connexion réussie',
+            'user' => [
+                'utilisateur_id' => $user['utilisateur_id'],
+                'code_utilisateur' => $user['code_utilisateur'],
+                'email' => $user['email'],
+                'nom' => $user['nom'],
+                'prenoms' => $user['prenoms'],
+                'role_principal' => $user['nom_role'],
+                'role_id' => $user['role_id'],
+                'tous_roles' => [$user['nom_role']]
+            ]
+        ];
+    }
+    
+    /**
+     * Récupérer un utilisateur par email
+     */
+    private function getUserByEmail($email) {
+        $sql = "SELECT u.*, ip.nom, ip.prenoms, r.nom_role, s.code_statut as statut_code
+                FROM utilisateurs u 
+                LEFT JOIN informations_personnelles ip ON u.utilisateur_id = ip.utilisateur_id
+                LEFT JOIN roles r ON u.role_id = r.role_id
+                LEFT JOIN statuts s ON u.statut_id = s.statut_id
+                WHERE u.email = ? AND u.est_actif = 1";
+        
+        return $this->db->fetch($sql, [$email]);
+    }
+    
+    /**
+     * Vérifier si le compte est bloqué
+     */
+    private function checkAccountBlock($email) {
+        $sql = "SELECT tentatives_connexion_echouees, compte_bloque, date_blocage 
+                FROM utilisateurs 
+                WHERE email = ?";
+        
+        $user = $this->db->fetch($sql, [$email]);
+        
+        if (!$user) {
+            return ['blocked' => false];
+        }
+        
+        // Vérifier si le compte est bloqué
+        if ($user['compte_bloque']) {
+            $blocageTime = strtotime($user['date_blocage']);
+            $now = time();
+            $blocageDuration = 30 * 60; // 30 minutes
+            
+            if (($now - $blocageTime) < $blocageDuration) {
+                $remainingTime = $blocageDuration - ($now - $blocageTime);
+                $remainingMinutes = ceil($remainingTime / 60);
+                
+                return [
+                    'blocked' => true,
+                    'message' => "Compte bloqué. Réessayez dans {$remainingMinutes} minute(s)"
+                ];
+            } else {
+                // Débloquer le compte
+                $this->unblockAccount($email);
+                return ['blocked' => false];
+            }
+        }
+        
+        return ['blocked' => false];
+    }
+    
+    /**
+     * Gérer une connexion échouée
+     */
+    private function handleFailedLogin($userId, $email) {
+        $this->logFailedAttempt($email, 'Mot de passe incorrect');
+        
+        // Incrémenter le compteur de tentatives
+        $sql = "UPDATE utilisateurs 
+                SET tentatives_connexion_echouees = tentatives_connexion_echouees + 1 
+                WHERE utilisateur_id = ?";
+        $this->db->query($sql, [$userId]);
+        
+        // Vérifier si on doit bloquer le compte
+        $user = $this->db->fetch("SELECT tentatives_connexion_echouees FROM utilisateurs WHERE utilisateur_id = ?", [$userId]);
+        
+        if ($user['tentatives_connexion_echouees'] >= 5) {
+            $this->blockAccount($userId);
+        }
+    }
+    
+    /**
+     * Gérer une connexion réussie
+     */
+    private function handleSuccessfulLogin($userId) {
+        $sql = "UPDATE utilisateurs 
+                SET tentatives_connexion_echouees = 0, 
+                    compte_bloque = 0,
+                    date_blocage = NULL,
+                    derniere_connexion = NOW() 
+                WHERE utilisateur_id = ?";
+        $this->db->query($sql, [$userId]);
+        
+        // Log de connexion réussie
+        $this->logSuccessfulAttempt($userId);
+    }
+    
+    /**
+     * Bloquer un compte
+     */
+    private function blockAccount($userId) {
+        $sql = "UPDATE utilisateurs 
+                SET compte_bloque = 1, date_blocage = NOW() 
+                WHERE utilisateur_id = ?";
+        $this->db->query($sql, [$userId]);
+    }
+    
+    /**
+     * Débloquer un compte
+     */
+    private function unblockAccount($email) {
+        $sql = "UPDATE utilisateurs 
+                SET compte_bloque = 0, 
+                    date_blocage = NULL, 
+                    tentatives_connexion_echouees = 0 
+                WHERE email = ?";
+        $this->db->query($sql, [$email]);
+    }
+    
+    /**
+     * Logger une tentative de connexion échouée
+     */
+    private function logFailedAttempt($email, $reason) {
+        try {
+            $sql = "INSERT INTO tentativesconnexion (email, ip_address, user_agent, succes, raison_echec) 
+                    VALUES (?, ?, ?, 0, ?)";
+            $params = [
+                $email,
+                $_SERVER['REMOTE_ADDR'] ?? 'Unknown',
+                $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown',
+                $reason
+            ];
+            $this->db->query($sql, $params);
+        } catch (Exception $e) {
+            error_log("Erreur log tentative échouée: " . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Logger une tentative de connexion réussie
+     */
+    private function logSuccessfulAttempt($userId) {
+        try {
+            $user = $this->db->fetch("SELECT email FROM utilisateurs WHERE utilisateur_id = ?", [$userId]);
+            
+            $sql = "INSERT INTO tentativesconnexion (email, ip_address, user_agent, succes) 
+                    VALUES (?, ?, ?, 1)";
+            $params = [
+                $user['email'],
+                $_SERVER['REMOTE_ADDR'] ?? 'Unknown',
+                $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown'
+            ];
+            $this->db->query($sql, $params);
+        } catch (Exception $e) {
+            error_log("Erreur log tentative réussie: " . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Générer un token de récupération de mot de passe
+     */
+    public function generatePasswordResetToken($email) {
+        $user = $this->getUserByEmail($email);
+        
+        if (!$user) {
+            return [
+                'success' => false,
+                'message' => 'Aucun compte associé à cette adresse email'
+            ];
+        }
+        
+        $token = bin2hex(random_bytes(32));
+        $expiration = date('Y-m-d H:i:s', strtotime('+1 hour'));
+        
+        $sql = "UPDATE utilisateurs 
+                SET token_recuperation_mdp = ?, date_expiration_token = ? 
+                WHERE utilisateur_id = ?";
+        
+        $this->db->query($sql, [$token, $expiration, $user['utilisateur_id']]);
+        
+        return [
+            'success' => true,
+            'token' => $token,
+            'user' => $user
+        ];
+    }
+    
+    /**
+     * Vérifier un token de récupération
+     */
+    public function verifyResetToken($token) {
+        $sql = "SELECT utilisateur_id, email, date_expiration_token 
+                FROM utilisateurs 
+                WHERE token_recuperation_mdp = ? 
+                AND date_expiration_token > NOW()";
+        
+        return $this->db->fetch($sql, [$token]);
+    }
+    
+    /**
+     * Réinitialiser le mot de passe
+     */
+    public function resetPassword($token, $newPassword) {
+        $user = $this->verifyResetToken($token);
+        
+        if (!$user) {
+            return [
+                'success' => false,
+                'message' => 'Token invalide ou expiré'
+            ];
+        }
+        
+        $salt = bin2hex(random_bytes(16));
+        $passwordHash = hash('sha256', $newPassword . $salt);
+        
+        $sql = "UPDATE utilisateurs 
+                SET mot_de_passe_hash = ?, 
+                    salt = ?,
+                    token_recuperation_mdp = NULL,
+                    date_expiration_token = NULL,
+                    tentatives_connexion_echouees = 0,
+                    compte_bloque = 0,
+                    date_blocage = NULL
+                WHERE utilisateur_id = ?";
+        
+        $this->db->query($sql, [$passwordHash, $salt, $user['utilisateur_id']]);
+        
+        return [
+            'success' => true,
+            'message' => 'Mot de passe réinitialisé avec succès'
+        ];
     }
 }
-
-function redirectTo($url) {
-    header("Location: $url");
-    exit;
-}
-
-function jsonResponse($data, $statusCode = 200) {
-    http_response_code($statusCode);
-    header('Content-Type: application/json');
-    echo json_encode($data);
-    exit;
-}
-
-function logError($message, $file = '', $line = '') {
-    $log = date('[Y-m-d H:i:s] ') . $message;
-    if ($file) $log .= " in $file";
-    if ($line) $log .= " at line $line";
-    error_log($log);
-}
-
-/**
- * Gestion des erreurs globales
- */
-set_error_handler(function($severity, $message, $file, $line) {
-    logError("PHP Error: $message", $file, $line);
-});
-
-set_exception_handler(function($exception) {
-    logError("Uncaught Exception: " . $exception->getMessage(), $exception->getFile(), $exception->getLine());
-});
 
 // Configuration des erreurs
 ini_set('display_errors', 0);
@@ -395,4 +625,10 @@ ini_set('error_log', __DIR__ . '/../logs/error.log');
 
 // Timezone
 date_default_timezone_set('Africa/Abidjan');
+
+// Créer le dossier de logs s'il n'existe pas
+$logDir = __DIR__ . '/../logs';
+if (!is_dir($logDir)) {
+    mkdir($logDir, 0755, true);
+}
 ?>

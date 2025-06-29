@@ -1,31 +1,214 @@
 <?php
 /**
- * Fichier des fonctions utilitaires du système de validation académique
- * Université Félix Houphouët-Boigny de Cocody
- * 
- * @author Système de Gestion Académique
- * @version 1.0
- * @date 2025
+ * Fonctions utilitaires
+ * Système de Validation Académique - UFHB Cocody
+ * Fichier: includes/functions.php
  */
-
-// Empêcher l'accès direct
-if (!defined('INCLUDES_PATH')) {
-    die('Accès direct interdit');
-}
-
-// ========================================================================================
-// FONCTIONS DE SÉCURITÉ ET AUTHENTIFICATION
-// ========================================================================================
 
 /**
- * Hacher un mot de passe avec salt
+ * Nettoyer et sécuriser les entrées utilisateur
  */
-function hasherMotDePasse($motDePasse, $salt = null) {
-    if ($salt === null) {
-        $salt = bin2hex(random_bytes(32));
+function sanitizeInput($data) {
+    if (is_array($data)) {
+        return array_map('sanitizeInput', $data);
     }
+    
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
+    return $data;
+}
+
+/**
+ * Valider une adresse email
+ */
+function validateEmail($email) {
+    return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+}
+
+/**
+ * Valider un numéro de téléphone
+ */
+function validatePhone($phone) {
+    // Pattern pour les numéros ivoiriens
+    $pattern = '/^(\+225|225)?[0-9]{8,10}$/';
+    return preg_match($pattern, $phone);
+}
+
+/**
+ * Générer un token sécurisé
+ */
+function generateToken($length = 32) {
+    return bin2hex(random_bytes($length));
+}
+
+/**
+ * Générer un mot de passe aléatoire
+ */
+function generateRandomPassword($length = 12) {
+    $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
+    $password = '';
+    $max = strlen($characters) - 1;
+    
+    for ($i = 0; $i < $length; $i++) {
+        $password .= $characters[random_int(0, $max)];
+    }
+    
+    return $password;
+}
+
+/**
+ * Formater une date
+ */
+function formatDate($date, $format = 'd/m/Y') {
+    if (empty($date) || $date === '0000-00-00' || $date === '0000-00-00 00:00:00') {
+        return '-';
+    }
+    
+    try {
+        $dateTime = new DateTime($date);
+        return $dateTime->format($format);
+    } catch (Exception $e) {
+        return '-';
+    }
+}
+
+/**
+ * Formater une date et heure
+ */
+function formatDateTime($datetime, $format = 'd/m/Y à H:i') {
+    return formatDate($datetime, $format);
+}
+
+/**
+ * Calculer l'âge à partir d'une date de naissance
+ */
+function calculateAge($birthDate) {
+    if (empty($birthDate) || $birthDate === '0000-00-00') {
+        return null;
+    }
+    
+    try {
+        $birth = new DateTime($birthDate);
+        $today = new DateTime();
+        return $today->diff($birth)->y;
+    } catch (Exception $e) {
+        return null;
+    }
+}
+
+/**
+ * Formater une taille de fichier
+ */
+function formatFileSize($bytes) {
+    if ($bytes == 0) return '0 Bytes';
+    
+    $k = 1024;
+    $sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    $i = floor(log($bytes) / log($k));
+    
+    return round($bytes / pow($k, $i), 2) . ' ' . $sizes[$i];
+}
+
+/**
+ * Générer un slug à partir d'une chaîne
+ */
+function generateSlug($string) {
+    $string = strtolower($string);
+    $string = preg_replace('/[àáâãäå]/', 'a', $string);
+    $string = preg_replace('/[èéêë]/', 'e', $string);
+    $string = preg_replace('/[ìíîï]/', 'i', $string);
+    $string = preg_replace('/[òóôõö]/', 'o', $string);
+    $string = preg_replace('/[ùúûü]/', 'u', $string);
+    $string = preg_replace('/[ñ]/', 'n', $string);
+    $string = preg_replace('/[ç]/', 'c', $string);
+    $string = preg_replace('/[^a-z0-9\s-]/', '', $string);
+    $string = preg_replace('/[\s-]+/', '-', $string);
+    return trim($string, '-');
+}
+
+/**
+ * Redirection sécurisée
+ */
+function redirectTo($url, $permanent = false) {
+    $status = $permanent ? 301 : 302;
+    
+    // Nettoyer l'URL
+    $url = filter_var($url, FILTER_SANITIZE_URL);
+    
+    // Si c'est une URL relative, ajouter le chemin de base
+    if (!filter_var($url, FILTER_VALIDATE_URL)) {
+        $baseUrl = getBaseUrl();
+        $url = rtrim($baseUrl, '/') . '/' . ltrim($url, '/');
+    }
+    
+    header("Location: $url", true, $status);
+    exit();
+}
+
+/**
+ * Obtenir l'URL de base du site
+ */
+function getBaseUrl() {
+    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+    $host = $_SERVER['HTTP_HOST'];
+    $script = $_SERVER['SCRIPT_NAME'];
+    $path = dirname($script);
+    
+    return $protocol . '://' . $host . ($path === '/' ? '' : $path);
+}
+
+/**
+ * Réponse JSON
+ */
+function jsonResponse($data, $status = 200) {
+    http_response_code($status);
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode($data, JSON_UNESCAPED_UNICODE);
+    exit();
+}
+
+/**
+ * Vérifier si c'est une requête AJAX
+ */
+function isAjaxRequest() {
+    return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+           strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+}
+
+/**
+ * Obtenir l'adresse IP du client
+ */
+function getClientIP() {
+    $ipKeys = ['HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 
+               'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR'];
+    
+    foreach ($ipKeys as $key) {
+        if (array_key_exists($key, $_SERVER) === true) {
+            foreach (explode(',', $_SERVER[$key]) as $ip) {
+                $ip = trim($ip);
+                if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false) {
+                    return $ip;
+                }
+            }
+        }
+    }
+    
+    return $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+}
+
+/**
+ * Hasher un mot de passe avec un salt
+ */
+function hashPassword($password, $salt = null) {
+    if ($salt === null) {
+        $salt = bin2hex(random_bytes(16));
+    }
+    
+    $hash = hash('sha256', $password . $salt);
+    
     return [
-        'hash' => password_hash($motDePasse . $salt, PASSWORD_ARGON2ID),
+        'hash' => $hash,
         'salt' => $salt
     ];
 }
@@ -33,699 +216,233 @@ function hasherMotDePasse($motDePasse, $salt = null) {
 /**
  * Vérifier un mot de passe
  */
-function verifierMotDePasse($motDePasse, $hash, $salt) {
-    return password_verify($motDePasse . $salt, $hash);
-}
-
-/**
- * Générer un token sécurisé
- */
-function genererToken($longueur = 32) {
-    return bin2hex(random_bytes($longueur));
-}
-
-/**
- * Vérifier si l'utilisateur est connecté
- */
-function estConnecte() {
-    return isset($_SESSION['utilisateur_id']) && !empty($_SESSION['utilisateur_id']);
-}
-
-/**
- * Vérifier le rôle de l'utilisateur
- */
-function verifierRole($roles_autorises) {
-    if (!estConnecte()) {
-        return false;
-    }
-    
-    if (is_string($roles_autorises)) {
-        $roles_autorises = [$roles_autorises];
-    }
-    
-    return in_array($_SESSION['role_nom'], $roles_autorises);
-}
-
-/**
- * Redirecter si non autorisé
- */
-function verifierAutorisation($roles_autorises) {
-    if (!verifierRole($roles_autorises)) {
-        header('Location: /pages/erreur/403.php');
-        exit;
-    }
-}
-
-/**
- * Déconnexion sécurisée
- */
-function deconnecter() {
-    global $conn;
-    
-    if (estConnecte()) {
-        // Invalider la session en base
-        $stmt = $conn->prepare("UPDATE sessions_utilisateurs SET est_active = 0 WHERE utilisateur_id = ? AND est_active = 1");
-        $stmt->execute([$_SESSION['utilisateur_id']]);
-        
-        // Log de déconnexion
-        ajouterLogAudit($_SESSION['utilisateur_id'], 'LOGOUT', 'sessions_utilisateurs', $_SESSION['utilisateur_id']);
-    }
-    
-    session_destroy();
-    header('Location: /login.php');
-    exit;
-}
-
-// ========================================================================================
-// FONCTIONS DE BASE DE DONNÉES
-// ========================================================================================
-
-/**
- * Exécuter une requête sécurisée
- */
-function executerRequete($sql, $params = []) {
-    global $conn;
-    
-    try {
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($params);
-        return $stmt;
-    } catch (PDOException $e) {
-        error_log("Erreur SQL: " . $e->getMessage());
-        return false;
-    }
-}
-
-/**
- * Récupérer un enregistrement
- */
-function obtenirEnregistrement($sql, $params = []) {
-    $stmt = executerRequete($sql, $params);
-    return $stmt ? $stmt->fetch(PDO::FETCH_ASSOC) : false;
-}
-
-/**
- * Récupérer plusieurs enregistrements
- */
-function obtenirEnregistrements($sql, $params = []) {
-    $stmt = executerRequete($sql, $params);
-    return $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
-}
-
-/**
- * Compter les enregistrements
- */
-function compterEnregistrements($table, $conditions = '', $params = []) {
-    $sql = "SELECT COUNT(*) as total FROM $table";
-    if (!empty($conditions)) {
-        $sql .= " WHERE $conditions";
-    }
-    
-    $result = obtenirEnregistrement($sql, $params);
-    return $result ? $result['total'] : 0;
-}
-
-/**
- * Insérer un enregistrement
- */
-function insererEnregistrement($table, $donnees) {
-    global $conn;
-    
-    $colonnes = implode(',', array_keys($donnees));
-    $placeholders = ':' . implode(', :', array_keys($donnees));
-    
-    $sql = "INSERT INTO $table ($colonnes) VALUES ($placeholders)";
-    
-    try {
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($donnees);
-        return $conn->lastInsertId();
-    } catch (PDOException $e) {
-        error_log("Erreur insertion: " . $e->getMessage());
-        return false;
-    }
-}
-
-/**
- * Mettre à jour un enregistrement
- */
-function mettreAJourEnregistrement($table, $donnees, $conditions, $params_conditions = []) {
-    global $conn;
-    
-    $set_clause = [];
-    foreach (array_keys($donnees) as $colonne) {
-        $set_clause[] = "$colonne = :$colonne";
-    }
-    
-    $sql = "UPDATE $table SET " . implode(', ', $set_clause) . " WHERE $conditions";
-    
-    try {
-        $stmt = $conn->prepare($sql);
-        $stmt->execute(array_merge($donnees, $params_conditions));
-        return $stmt->rowCount();
-    } catch (PDOException $e) {
-        error_log("Erreur mise à jour: " . $e->getMessage());
-        return false;
-    }
-}
-
-/**
- * Supprimer un enregistrement
- */
-function supprimerEnregistrement($table, $conditions, $params = []) {
-    global $conn;
-    
-    $sql = "DELETE FROM $table WHERE $conditions";
-    
-    try {
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($params);
-        return $stmt->rowCount();
-    } catch (PDOException $e) {
-        error_log("Erreur suppression: " . $e->getMessage());
-        return false;
-    }
-}
-
-// ========================================================================================
-// FONCTIONS MÉTIER SPÉCIFIQUES
-// ========================================================================================
-
-/**
- * Obtenir les informations complètes d'un utilisateur
- */
-function obtenirUtilisateurComplet($utilisateur_id) {
-    $sql = "
-        SELECT u.*, ip.*, r.nom_role, s.libelle_statut, s.couleur_affichage
-        FROM utilisateurs u
-        LEFT JOIN informations_personnelles ip ON u.utilisateur_id = ip.utilisateur_id
-        LEFT JOIN roles r ON u.role_id = r.role_id
-        LEFT JOIN statuts s ON u.statut_id = s.statut_id
-        WHERE u.utilisateur_id = ?
-    ";
-    
-    return obtenirEnregistrement($sql, [$utilisateur_id]);
-}
-
-/**
- * Obtenir les informations d'un étudiant
- */
-function obtenirEtudiantComplet($etudiant_id) {
-    $sql = "
-        SELECT e.*, u.email, ip.nom, ip.prenoms, ip.telephone,
-               ne.libelle_niveau, sp.libelle_specialite,
-               s.libelle_statut as statut_eligibilite_libelle,
-               s.couleur_affichage
-        FROM etudiants e
-        JOIN utilisateurs u ON e.utilisateur_id = u.utilisateur_id
-        JOIN informations_personnelles ip ON u.utilisateur_id = ip.utilisateur_id
-        JOIN niveaux_etude ne ON e.niveau_id = ne.niveau_id
-        LEFT JOIN specialites sp ON e.specialite_id = sp.specialite_id
-        JOIN statuts s ON e.statut_eligibilite = s.statut_id
-        WHERE e.etudiant_id = ?
-    ";
-    
-    return obtenirEnregistrement($sql, [$etudiant_id]);
-}
-
-/**
- * Vérifier l'éligibilité d'un étudiant
- */
-function verifierEligibiliteEtudiant($etudiant_id) {
-    // Vérifier le règlement des frais
-    $reglements_sql = "
-        SELECT SUM(montant_restant) as solde_restant
-        FROM reglements r
-        JOIN statuts s ON r.statut_id = s.statut_id
-        WHERE r.etudiant_id = ? AND s.code_statut != 'PAYE'
-    ";
-    
-    $reglement = obtenirEnregistrement($reglements_sql, [$etudiant_id]);
-    $frais_regles = ($reglement['solde_restant'] <= 0);
-    
-    // Vérifier la moyenne générale
-    $etudiant = obtenirEtudiantComplet($etudiant_id);
-    $moyenne_suffisante = ($etudiant['moyenne_generale'] >= 10.0);
-    
-    // Vérifier les crédits
-    $credits_valides = ($etudiant['nombre_credits_valides'] >= $etudiant['nombre_credits_requis']);
-    
-    $eligible = $frais_regles && $moyenne_suffisante && $credits_valides;
-    
-    // Mettre à jour le statut d'éligibilité
-    $nouveau_statut = $eligible ? 5 : 6; // ELIGIBLE : NON_ELIGIBLE
-    mettreAJourEnregistrement('etudiants', 
-        ['statut_eligibilite' => $nouveau_statut], 
-        'etudiant_id = ?', 
-        [$etudiant_id]
-    );
-    
-    return [
-        'eligible' => $eligible,
-        'frais_regles' => $frais_regles,
-        'moyenne_suffisante' => $moyenne_suffisante,
-        'credits_valides' => $credits_valides,
-        'details' => [
-            'solde_restant' => $reglement['solde_restant'],
-            'moyenne' => $etudiant['moyenne_generale'],
-            'credits' => $etudiant['nombre_credits_valides'] . '/' . $etudiant['nombre_credits_requis']
-        ]
-    ];
-}
-
-/**
- * Calculer la moyenne d'un étudiant
- */
-function calculerMoyenneEtudiant($etudiant_id) {
-    global $conn;
-    
-    try {
-        $stmt = $conn->prepare("CALL sp_calculer_moyenne_etudiant(?, @moyenne)");
-        $stmt->execute([$etudiant_id]);
-        
-        $result = $conn->query("SELECT @moyenne as moyenne")->fetch(PDO::FETCH_ASSOC);
-        return $result['moyenne'];
-    } catch (PDOException $e) {
-        error_log("Erreur calcul moyenne: " . $e->getMessage());
-        return false;
-    }
-}
-
-/**
- * Obtenir les statistiques du dashboard
- */
-function obtenirStatistiquesDashboard($role_nom) {
-    $stats = [];
-    
-    switch ($role_nom) {
-        case 'Administrateur':
-            $stats = [
-                'total_utilisateurs' => compterEnregistrements('utilisateurs', 'est_actif = 1'),
-                'total_etudiants' => compterEnregistrements('etudiants'),
-                'total_enseignants' => compterEnregistrements('enseignants'),
-                'total_personnel' => compterEnregistrements('personnel_administratif'),
-                'rapports_en_cours' => compterEnregistrements('rapports r JOIN statuts s ON r.statut_id = s.statut_id', 's.code_statut IN ("DEPOSE", "EN_VERIFICATION")'),
-                'soutenances_ce_mois' => compterEnregistrements('soutenances', 'MONTH(date_prevue) = MONTH(CURDATE()) AND YEAR(date_prevue) = YEAR(CURDATE())')
-            ];
-            break;
-            
-        case 'Responsable Scolarité':
-            $stats = [
-                'total_etudiants' => compterEnregistrements('etudiants'),
-                'etudiants_eligibles' => compterEnregistrements('etudiants e JOIN statuts s ON e.statut_eligibilite = s.statut_id', 's.code_statut = "ELIGIBLE"'),
-                'notes_a_saisir' => compterEnregistrements('evaluations', 'est_validee = 0'),
-                'rapports_deposes' => compterEnregistrements('rapports r JOIN statuts s ON r.statut_id = s.statut_id', 's.code_statut = "DEPOSE"'),
-                'moyenne_generale' => obtenirEnregistrement("SELECT AVG(moyenne_generale) as moyenne FROM etudiants WHERE moyenne_generale IS NOT NULL")['moyenne']
-            ];
-            break;
-            
-        case 'Chargé Communication':
-            $stats = [
-                'rapports_a_verifier' => compterEnregistrements('rapports r JOIN statuts s ON r.statut_id = s.statut_id', 's.code_statut = "DEPOSE"'),
-                'rapports_en_verification' => compterEnregistrements('rapports r JOIN statuts s ON r.statut_id = s.statut_id', 's.code_statut = "EN_VERIFICATION"'),
-                'comptes_rendus_recus' => compterEnregistrements('evaluationsrapport', 'DATE(date_evaluation) = CURDATE()'),
-                'validations_en_attente' => compterEnregistrements('rapports r JOIN statuts s ON r.statut_id = s.statut_id', 's.code_statut = "EN_VERIFICATION"')
-            ];
-            break;
-            
-        case 'Commission':
-            $stats = [
-                'rapports_a_evaluer' => compterEnregistrements('rapports r JOIN statuts s ON r.statut_id = s.statut_id', 's.code_statut = "EN_VERIFICATION"'),
-                'evaluations_terminees' => compterEnregistrements('evaluationsrapport', 'DATE(date_evaluation) = CURDATE()'),
-                'jurys_a_constituer' => compterEnregistrements('rapports r JOIN statuts s ON r.statut_id = s.statut_id', 's.code_statut = "VALIDE" AND r.rapport_id NOT IN (SELECT id_rapport FROM jurys)')
-            ];
-            break;
-            
-        case 'Secrétaire':
-            $stats = [
-                'total_etudiants' => compterEnregistrements('etudiants'),
-                'soutenances_programmees' => compterEnregistrements('soutenances s JOIN statuts st ON s.statut_id = st.statut_id', 'st.code_statut = "PROGRAMMEE"'),
-                'soutenances_ce_mois' => compterEnregistrements('soutenances', 'MONTH(date_prevue) = MONTH(CURDATE()) AND YEAR(date_prevue) = YEAR(CURDATE())'),
-                'salles_disponibles' => compterEnregistrements('salles', 'est_disponible = 1 AND est_actif = 1')
-            ];
-            break;
-            
-        case 'Étudiant':
-            $etudiant_id = $_SESSION['etudiant_id'] ?? null;
-            if ($etudiant_id) {
-                $rapport = obtenirEnregistrement("SELECT * FROM rapports WHERE etudiant_id = ?", [$etudiant_id]);
-                $stats = [
-                    'progression_rapport' => $rapport ? calculerProgressionRapport($rapport['rapport_id']) : 0,
-                    'nombre_mots' => $rapport['nombre_mots'] ?? 0,
-                    'statut_rapport' => $rapport ? obtenirEnregistrement("SELECT libelle_statut FROM statuts WHERE statut_id = ?", [$rapport['statut_id']])['libelle_statut'] : 'Aucun rapport',
-                    'notifications_non_lues' => compterEnregistrements('notifications', 'utilisateur_id = ? AND est_lue = 0', [$_SESSION['utilisateur_id']])
-                ];
-            }
-            break;
-    }
-    
-    return $stats;
-}
-
-/**
- * Calculer la progression d'un rapport
- */
-function calculerProgressionRapport($rapport_id) {
-    $rapport = obtenirEnregistrement("SELECT * FROM rapports WHERE rapport_id = ?", [$rapport_id]);
-    
-    if (!$rapport) return 0;
-    
-    $progression = 0;
-    
-    // Critères de progression
-    if (!empty($rapport['titre'])) $progression += 10;
-    if (!empty($rapport['resume'])) $progression += 15;
-    if (!empty($rapport['introduction_texte'])) $progression += 15;
-    if (!empty($rapport['problematique_texte'])) $progression += 15;
-    if (!empty($rapport['methodologie_texte'])) $progression += 15;
-    if (!empty($rapport['fichier_rapport'])) $progression += 20;
-    if ($rapport['nombre_pages'] >= 30) $progression += 10;
-    
-    return min($progression, 100);
-}
-
-// ========================================================================================
-// FONCTIONS D'UPLOAD ET FICHIERS
-// ========================================================================================
-
-/**
- * Uploader un fichier
- */
-function uploaderFichier($fichier, $dossier_destination, $types_autorises = ['pdf', 'doc', 'docx']) {
-    if (!isset($fichier['tmp_name']) || empty($fichier['tmp_name'])) {
-        return ['success' => false, 'message' => 'Aucun fichier sélectionné'];
-    }
-    
-    $extension = strtolower(pathinfo($fichier['name'], PATHINFO_EXTENSION));
-    
-    if (!in_array($extension, $types_autorises)) {
-        return ['success' => false, 'message' => 'Type de fichier non autorisé'];
-    }
-    
-    $taille_max = 50 * 1024 * 1024; // 50MB
-    if ($fichier['size'] > $taille_max) {
-        return ['success' => false, 'message' => 'Fichier trop volumineux (max 50MB)'];
-    }
-    
-    $nom_fichier = uniqid() . '_' . time() . '.' . $extension;
-    $chemin_complet = $dossier_destination . '/' . $nom_fichier;
-    
-    if (!is_dir($dossier_destination)) {
-        mkdir($dossier_destination, 0755, true);
-    }
-    
-    if (move_uploaded_file($fichier['tmp_name'], $chemin_complet)) {
-        return [
-            'success' => true,
-            'nom_fichier' => $nom_fichier,
-            'chemin' => $chemin_complet,
-            'taille' => $fichier['size']
-        ];
-    }
-    
-    return ['success' => false, 'message' => 'Erreur lors de l\'upload'];
-}
-
-// ========================================================================================
-// FONCTIONS DE NOTIFICATION ET COMMUNICATION
-// ========================================================================================
-
-/**
- * Créer une notification
- */
-function creerNotification($utilisateur_id, $type, $titre, $contenu, $lien_action = null, $priorite = 'NORMALE') {
-    global $conn;
-    
-    // Obtenir l'ID de priorité
-    $priorite_obj = obtenirEnregistrement("SELECT statut_id FROM statuts WHERE code_statut = ? AND type_statut = 'Priorite'", [$priorite]);
-    $priorite_id = $priorite_obj['statut_id'];
-    
-    $donnees = [
-        'utilisateur_id' => $utilisateur_id,
-        'type_notification' => $type,
-        'titre_notification' => $titre,
-        'contenu_notification' => $contenu,
-        'lien_action' => $lien_action,
-        'priorite_id' => $priorite_id
-    ];
-    
-    return insererEnregistrement('notifications', $donnees);
-}
-
-/**
- * Envoyer un email
- */
-function envoyerEmail($destinataire, $sujet, $contenu, $copie = null) {
-    // Configuration email (à adapter selon votre serveur)
-    $headers = [
-        'From: noreply@ufhb.edu.ci',
-        'Reply-To: noreply@ufhb.edu.ci',
-        'Content-Type: text/html; charset=UTF-8'
-    ];
-    
-    if ($copie) {
-        $headers[] = "Cc: $copie";
-    }
-    
-    return mail($destinataire, $sujet, $contenu, implode("\r\n", $headers));
-}
-
-/**
- * Marquer une notification comme lue
- */
-function marquerNotificationLue($notification_id, $utilisateur_id) {
-    return mettreAJourEnregistrement(
-        'notifications',
-        ['est_lue' => 1, 'date_lecture' => date('Y-m-d H:i:s')],
-        'notification_id = ? AND utilisateur_id = ?',
-        [$notification_id, $utilisateur_id]
-    );
-}
-
-// ========================================================================================
-// FONCTIONS D'AUDIT ET LOGS
-// ========================================================================================
-
-/**
- * Ajouter un log d'audit
- */
-function ajouterLogAudit($utilisateur_id, $type_action, $table_cible, $enregistrement_id, $anciennes_valeurs = null, $nouvelles_valeurs = null, $commentaire = null) {
-    $donnees = [
-        'utilisateur_id' => $utilisateur_id,
-        'type_action' => $type_action,
-        'table_cible' => $table_cible,
-        'enregistrement_id' => $enregistrement_id,
-        'anciennes_valeurs' => $anciennes_valeurs ? json_encode($anciennes_valeurs) : null,
-        'nouvelles_valeurs' => $nouvelles_valeurs ? json_encode($nouvelles_valeurs) : null,
-        'adresse_ip' => $_SERVER['REMOTE_ADDR'] ?? null,
-        'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null,
-        'commentaire' => $commentaire
-    ];
-    
-    return insererEnregistrement('logs_audit', $donnees);
-}
-
-// ========================================================================================
-// FONCTIONS UTILITAIRES
-// ========================================================================================
-
-/**
- * Formater une date
- */
-function formaterDate($date, $format = 'd/m/Y') {
-    if (empty($date)) return '';
-    return date($format, strtotime($date));
-}
-
-/**
- * Formater une date avec heure
- */
-function formaterDateHeure($date, $format = 'd/m/Y H:i') {
-    if (empty($date)) return '';
-    return date($format, strtotime($date));
+function verifyPassword($password, $hash, $salt) {
+    return hash('sha256', $password . $salt) === $hash;
 }
 
 /**
  * Générer un numéro unique
  */
-function genererNumeroUnique($prefixe, $table, $colonne, $longueur = 8) {
-    do {
-        $numero = $prefixe . str_pad(random_int(1, pow(10, $longueur) - 1), $longueur, '0', STR_PAD_LEFT);
-        $existe = obtenirEnregistrement("SELECT $colonne FROM $table WHERE $colonne = ?", [$numero]);
-    } while ($existe);
-    
-    return $numero;
+function generateUniqueNumber($prefix = '', $length = 6) {
+    $number = str_pad(mt_rand(0, pow(10, $length) - 1), $length, '0', STR_PAD_LEFT);
+    return $prefix . $number;
 }
 
 /**
- * Nettoyer et valider les données d'entrée
+ * Valider une extension de fichier
  */
-function nettoyerEntree($data) {
-    if (is_array($data)) {
-        return array_map('nettoyerEntree', $data);
+function validateFileExtension($filename, $allowedExtensions = ['pdf', 'doc', 'docx']) {
+    $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+    return in_array($extension, $allowedExtensions);
+}
+
+/**
+ * Sécuriser un nom de fichier
+ */
+function sanitizeFilename($filename) {
+    // Conserver l'extension
+    $extension = pathinfo($filename, PATHINFO_EXTENSION);
+    $name = pathinfo($filename, PATHINFO_FILENAME);
+    
+    // Nettoyer le nom
+    $name = preg_replace('/[^a-zA-Z0-9._-]/', '_', $name);
+    $name = preg_replace('/_+/', '_', $name);
+    $name = trim($name, '_');
+    
+    return $name . '.' . $extension;
+}
+
+/**
+ * Créer un dossier s'il n'existe pas
+ */
+function createDirectoryIfNotExists($path, $permissions = 0755) {
+    if (!is_dir($path)) {
+        return mkdir($path, $permissions, true);
     }
-    return htmlspecialchars(strip_tags(trim($data)), ENT_QUOTES, 'UTF-8');
-}
-
-/**
- * Valider un email
- */
-function validerEmail($email) {
-    return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
-}
-
-/**
- * Valider un numéro de téléphone
- */
-function validerTelephone($telephone) {
-    return preg_match('/^[0-9+\-\s\(\)]{8,15}$/', $telephone);
-}
-
-/**
- * Obtenir les options pour un select
- */
-function obtenirOptionsSelect($table, $colonne_valeur, $colonne_libelle, $condition = '', $params = []) {
-    $sql = "SELECT $colonne_valeur as valeur, $colonne_libelle as libelle FROM $table";
-    if (!empty($condition)) {
-        $sql .= " WHERE $condition";
-    }
-    $sql .= " ORDER BY $colonne_libelle";
-    
-    return obtenirEnregistrements($sql, $params);
-}
-
-/**
- * Obtenir les statuts par type
- */
-function obtenirStatutsParType($type_statut) {
-    return obtenirOptionsSelect('statuts', 'statut_id', 'libelle_statut', 'type_statut = ? AND est_actif = 1', [$type_statut]);
-}
-
-/**
- * Pagination
- */
-function genererPagination($page_actuelle, $total_enregistrements, $par_page, $url_base) {
-    $total_pages = ceil($total_enregistrements / $par_page);
-    
-    if ($total_pages <= 1) return '';
-    
-    $html = '<nav aria-label="Pagination"><ul class="pagination justify-content-center">';
-    
-    // Bouton précédent
-    if ($page_actuelle > 1) {
-        $prev = $page_actuelle - 1;
-        $html .= "<li class='page-item'><a class='page-link' href='{$url_base}?page={$prev}'>Précédent</a></li>";
-    }
-    
-    // Numéros de page
-    $debut = max(1, $page_actuelle - 2);
-    $fin = min($total_pages, $page_actuelle + 2);
-    
-    for ($i = $debut; $i <= $fin; $i++) {
-        $active = ($i == $page_actuelle) ? 'active' : '';
-        $html .= "<li class='page-item {$active}'><a class='page-link' href='{$url_base}?page={$i}'>{$i}</a></li>";
-    }
-    
-    // Bouton suivant
-    if ($page_actuelle < $total_pages) {
-        $next = $page_actuelle + 1;
-        $html .= "<li class='page-item'><a class='page-link' href='{$url_base}?page={$next}'>Suivant</a></li>";
-    }
-    
-    $html .= '</ul></nav>';
-    
-    return $html;
-}
-
-/**
- * Convertir la taille de fichier en format lisible
- */
-function formaterTailleFichier($taille) {
-    $unites = ['B', 'KB', 'MB', 'GB'];
-    $i = 0;
-    
-    while ($taille >= 1024 && $i < count($unites) - 1) {
-        $taille /= 1024;
-        $i++;
-    }
-    
-    return round($taille, 2) . ' ' . $unites[$i];
-}
-
-/**
- * Générer un badge de statut
- */
-function genererBadgeStatut($statut, $couleur = null) {
-    $couleur = $couleur ?: '#6c757d';
-    return "<span class='badge' style='background-color: {$couleur}; color: white;'>{$statut}</span>";
-}
-
-/**
- * Vérifier les permissions d'accès aux fichiers
- */
-function verifierAccesFichier($chemin_fichier, $utilisateur_id) {
-    // Logique de vérification des permissions
-    // À implémenter selon vos règles métier
     return true;
 }
 
 /**
- * Obtenir l'année académique actuelle
+ * Obtenir l'extension d'un fichier
  */
-function obtenirAnneeAcademique() {
-    $annee_actuelle = date('Y');
-    $mois_actuel = date('n');
+function getFileExtension($filename) {
+    return strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+}
+
+/**
+ * Vérifier si un fichier est une image
+ */
+function isImageFile($filename) {
+    $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'];
+    return in_array(getFileExtension($filename), $imageExtensions);
+}
+
+/**
+ * Générer une couleur aléatoire
+ */
+function generateRandomColor() {
+    return sprintf('#%06X', mt_rand(0, 0xFFFFFF));
+}
+
+/**
+ * Tronquer un texte
+ */
+function truncateText($text, $length = 100, $suffix = '...') {
+    if (strlen($text) <= $length) {
+        return $text;
+    }
     
-    // L'année académique commence en octobre
-    if ($mois_actuel >= 10) {
-        return $annee_actuelle . '-' . ($annee_actuelle + 1);
+    return substr($text, 0, $length) . $suffix;
+}
+
+/**
+ * Nettoyer une chaîne pour la recherche
+ */
+function cleanSearchString($string) {
+    $string = trim($string);
+    $string = preg_replace('/\s+/', ' ', $string);
+    return $string;
+}
+
+/**
+ * Convertir les accents
+ */
+function removeAccents($string) {
+    $accents = [
+        'à' => 'a', 'á' => 'a', 'â' => 'a', 'ã' => 'a', 'ä' => 'a', 'å' => 'a',
+        'è' => 'e', 'é' => 'e', 'ê' => 'e', 'ë' => 'e',
+        'ì' => 'i', 'í' => 'i', 'î' => 'i', 'ï' => 'i',
+        'ò' => 'o', 'ó' => 'o', 'ô' => 'o', 'õ' => 'o', 'ö' => 'o',
+        'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u',
+        'ñ' => 'n', 'ç' => 'c'
+    ];
+    
+    return strtr(strtolower($string), $accents);
+}
+
+/**
+ * Vérifier les permissions d'accès
+ */
+function checkPermission($requiredRole, $userRole) {
+    $roleHierarchy = [
+        'Étudiant' => 1,
+        'Personnel Administratif' => 2,
+        'Enseignant' => 3,
+        'Secrétaire' => 4,
+        'Commission' => 5,
+        'Chargé Communication' => 6,
+        'Responsable Scolarité' => 7,
+        'Administrateur' => 8
+    ];
+    
+    $requiredLevel = $roleHierarchy[$requiredRole] ?? 0;
+    $userLevel = $roleHierarchy[$userRole] ?? 0;
+    
+    return $userLevel >= $requiredLevel;
+}
+
+/**
+ * Logger une action
+ */
+function logAction($action, $details = '', $userId = null) {
+    try {
+        if ($userId === null) {
+            $userId = SessionManager::getUserId();
+        }
+        
+        $db = Database::getInstance();
+        $sql = "INSERT INTO logs_audit (utilisateur_id, type_action, commentaire, adresse_ip, user_agent) 
+                VALUES (?, ?, ?, ?, ?)";
+        
+        $params = [
+            $userId,
+            $action,
+            $details,
+            getClientIP(),
+            $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown'
+        ];
+        
+        $db->query($sql, $params);
+    } catch (Exception $e) {
+        error_log("Erreur lors du logging: " . $e->getMessage());
+    }
+}
+
+/**
+ * Obtenir la configuration du système
+ */
+function getSystemConfig($key, $default = null) {
+    try {
+        $db = Database::getInstance();
+        $config = $db->fetch("SELECT valeur_configuration FROM configuration_systeme WHERE cle_configuration = ?", [$key]);
+        return $config ? $config['valeur_configuration'] : $default;
+    } catch (Exception $e) {
+        return $default;
+    }
+}
+
+/**
+ * Définir une configuration du système
+ */
+function setSystemConfig($key, $value, $userId = null) {
+    try {
+        if ($userId === null) {
+            $userId = SessionManager::getUserId();
+        }
+        
+        $db = Database::getInstance();
+        
+        // Vérifier si la configuration existe
+        $exists = $db->exists('configuration_systeme', 'cle_configuration = ?', [$key]);
+        
+        if ($exists) {
+            $sql = "UPDATE configuration_systeme SET valeur_configuration = ?, modifie_par = ? WHERE cle_configuration = ?";
+            $db->query($sql, [$value, $userId, $key]);
+        } else {
+            $sql = "INSERT INTO configuration_systeme (cle_configuration, valeur_configuration, modifie_par) VALUES (?, ?, ?)";
+            $db->query($sql, [$key, $value, $userId]);
+        }
+        
+        return true;
+    } catch (Exception $e) {
+        error_log("Erreur configuration: " . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * Détecter le type de fichier par son contenu
+ */
+function detectMimeType($file) {
+    if (function_exists('finfo_open')) {
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mimeType = finfo_file($finfo, $file);
+        finfo_close($finfo);
+        return $mimeType;
+    } elseif (function_exists('mime_content_type')) {
+        return mime_content_type($file);
     } else {
-        return ($annee_actuelle - 1) . '-' . $annee_actuelle;
+        return false;
     }
-}
-
-// ========================================================================================
-// FONCTIONS DE GÉNÉRATION DE RAPPORTS
-// ========================================================================================
-
-/**
- * Exporter des données en CSV
- */
-function exporterCSV($donnees, $nom_fichier, $en_tetes = []) {
-    header('Content-Type: text/csv; charset=utf-8');
-    header('Content-Disposition: attachment; filename="' . $nom_fichier . '.csv"');
-    
-    $output = fopen('php://output', 'w');
-    
-    if (!empty($en_tetes)) {
-        fputcsv($output, $en_tetes);
-    }
-    
-    foreach ($donnees as $ligne) {
-        fputcsv($output, $ligne);
-    }
-    
-    fclose($output);
-    exit;
 }
 
 /**
- * Générer un rapport d'activité
+ * Créer un breadcrumb
  */
-function genererRapportActivite($utilisateur_id, $date_debut, $date_fin) {
-    $sql = "
-        SELECT la.*, u.email
-        FROM logs_audit la
-        LEFT JOIN utilisateurs u ON la.utilisateur_id = u.utilisateur_id
-        WHERE la.utilisateur_id = ? 
-        AND la.date_action BETWEEN ? AND ?
-        ORDER BY la.date_action DESC
-    ";
+function createBreadcrumb($items) {
+    $breadcrumb = '<nav aria-label="breadcrumb"><ol class="breadcrumb">';
     
-    return obtenirEnregistrements($sql, [$utilisateur_id, $date_debut, $date_fin]);
+    $count = count($items);
+    foreach ($items as $index => $item) {
+        if ($index === $count - 1) {
+            $breadcrumb .= '<li class="breadcrumb-item active" aria-current="page">' . htmlspecialchars($item['title']) . '</li>';
+        } else {
+            $url = isset($item['url']) ? htmlspecialchars($item['url']) : '#';
+            $breadcrumb .= '<li class="breadcrumb-item"><a href="' . $url . '">' . htmlspecialchars($item['title']) . '</a></li>';
+        }
+    }
+    
+    $breadcrumb .= '</ol></nav>';
+    return $breadcrumb;
 }
-
-// Définir la constante pour indiquer que les fonctions sont chargées
-define('FUNCTIONS_LOADED', true);
-
 ?>

@@ -1,5 +1,5 @@
 <?php
-/*
+
 session_start();
 require_once '../../../config/database.php';
 require_once '../../../config/session.php';
@@ -66,7 +66,7 @@ $etudiants = $pdo->query("SELECT e.*, n.nom as niveau_nom, s.nom as specialite_n
                          FROM etudiants e 
                          JOIN niveaux n ON e.niveau_id = n.id 
                          JOIN specialites s ON e.specialite_id = s.id 
-                         ORDER BY e.nom, e.prenom")->fetchAll();*/
+                         ORDER BY e.nom, e.prenom")->fetchAll();
 ?>
 
 <!DOCTYPE html>

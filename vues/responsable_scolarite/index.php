@@ -1,11 +1,11 @@
 <?php
-/*
+
 session_start();
 // Vérification des droits d'accès
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'responsable_scolarite') {
     header('Location: ../../login.php');
     exit;
-}*/
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">

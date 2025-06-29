@@ -1,5 +1,5 @@
 <?php
-/*
+
 session_start();
 
 // Vérification de l'authentification et du rôle
@@ -11,7 +11,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'responsable_scolarite
 // Inclusion des fichiers de configuration
 require_once '../../../config/database.php';
 require_once '../../../config/constants.php';
-require_once '../../../includes/functions.php';*/
+require_once '../../../includes/functions.php';
 ?>
 
 <!DOCTYPE html>
