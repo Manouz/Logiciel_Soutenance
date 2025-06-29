@@ -1,0 +1,34 @@
+[29-Jun-2025 12:14:58 Africa/Abidjan] PHP Warning:  require_once(config/fonction.php): Failed to open stream: No such file or directory in C:\wamp64\www\Logiciel_Soutenance\login.php on line 8
+[29-Jun-2025 12:14:58 Africa/Abidjan] PHP Stack trace:
+[29-Jun-2025 12:14:58 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\login.php:0
+[29-Jun-2025 12:14:58 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Failed opening required 'config/fonction.php' (include_path='.;C:\php\pear') in C:\wamp64\www\Logiciel_Soutenance\login.php:8
+Stack trace:
+#0 {main}
+  thrown in C:\wamp64\www\Logiciel_Soutenance\login.php on line 8
+[29-Jun-2025 12:16:35 Africa/Abidjan] PHP Warning:  require_once(C:\wamp64\www\Logiciel_Soutenance\includes/database.php): Failed to open stream: No such file or directory in C:\wamp64\www\Logiciel_Soutenance\includes\functions.php on line 8
+[29-Jun-2025 12:16:35 Africa/Abidjan] PHP Stack trace:
+[29-Jun-2025 12:16:35 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\login.php:0
+[29-Jun-2025 12:16:35 Africa/Abidjan] PHP   2. require_once() C:\wamp64\www\Logiciel_Soutenance\login.php:8
+[29-Jun-2025 12:16:35 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Failed opening required 'C:\wamp64\www\Logiciel_Soutenance\includes/database.php' (include_path='.;C:\php\pear') in C:\wamp64\www\Logiciel_Soutenance\includes\functions.php:8
+Stack trace:
+#0 C:\wamp64\www\Logiciel_Soutenance\login.php(8): require_once()
+#1 {main}
+  thrown in C:\wamp64\www\Logiciel_Soutenance\includes\functions.php on line 8
+[29-Jun-2025 12:16:45 Africa/Abidjan] PHP Warning:  require_once(C:\wamp64\www\Logiciel_Soutenance\includes/database.php): Failed to open stream: No such file or directory in C:\wamp64\www\Logiciel_Soutenance\includes\functions.php on line 8
+[29-Jun-2025 12:16:45 Africa/Abidjan] PHP Stack trace:
+[29-Jun-2025 12:16:45 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\login.php:0
+[29-Jun-2025 12:16:45 Africa/Abidjan] PHP   2. require_once() C:\wamp64\www\Logiciel_Soutenance\login.php:8
+[29-Jun-2025 12:16:45 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Failed opening required 'C:\wamp64\www\Logiciel_Soutenance\includes/database.php' (include_path='.;C:\php\pear') in C:\wamp64\www\Logiciel_Soutenance\includes\functions.php:8
+Stack trace:
+#0 C:\wamp64\www\Logiciel_Soutenance\login.php(8): require_once()
+#1 {main}
+  thrown in C:\wamp64\www\Logiciel_Soutenance\includes\functions.php on line 8
+[29-Jun-2025 12:16:45 Africa/Abidjan] PHP Warning:  require_once(C:\wamp64\www\Logiciel_Soutenance\includes/database.php): Failed to open stream: No such file or directory in C:\wamp64\www\Logiciel_Soutenance\includes\functions.php on line 8
+[29-Jun-2025 12:16:45 Africa/Abidjan] PHP Stack trace:
+[29-Jun-2025 12:16:45 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\login.php:0
+[29-Jun-2025 12:16:45 Africa/Abidjan] PHP   2. require_once() C:\wamp64\www\Logiciel_Soutenance\login.php:8
+[29-Jun-2025 12:16:45 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Failed opening required 'C:\wamp64\www\Logiciel_Soutenance\includes/database.php' (include_path='.;C:\php\pear') in C:\wamp64\www\Logiciel_Soutenance\includes\functions.php:8
+Stack trace:
+#0 C:\wamp64\www\Logiciel_Soutenance\login.php(8): require_once()
+#1 {main}
+  thrown in C:\wamp64\www\Logiciel_Soutenance\includes\functions.php on line 8

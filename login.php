@@ -1,3 +1,112 @@
+<?php
+/**
+ * Page de connexion
+ * Système de Validation Académique - UFHB Cocody
+ */
+
+require_once 'config/database.php';
+require_once 'includes/functions.php';
+
+// Démarrer la session
+SessionManager::start();
+
+// Rediriger si déjà connecté
+if (SessionManager::isLoggedIn()) {
+    // Redirection selon le rôle
+    $userRole = SessionManager::getUserRole();
+    $redirectMap = [
+        'Administrateur' => 'vues/admin/index.php',
+        'Responsable Scolarité' => 'vues/responsable_scolarite/index.php',
+        'Chargé Communication' => 'vues/charge_communication/index.php',
+        'Commission' => 'vues/commission/index.php',
+        'Secrétaire' => 'vues/secretaire/index.php',
+        'Enseignant' => 'vues/enseignant/index.php',
+        'Étudiant' => 'vues/etudiant/index.php'
+    ];
+    
+    $redirectUrl = $redirectMap[$userRole] ?? 'vues/etudiant/index.php';
+    redirectTo($redirectUrl);
+}
+
+$error = '';
+$success = '';
+
+// Traitement du formulaire de connexion
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = sanitizeInput($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
+    $remember = isset($_POST['remember']);
+    
+    if (empty($email) || empty($password)) {
+        $error = 'Veuillez remplir tous les champs';
+    } elseif (!validateEmail($email)) {
+        $error = 'Format d\'email invalide';
+    } else {
+        try {
+            $auth = new Auth();
+            $result = $auth->authenticate($email, $password);
+            
+            if ($result['success']) {
+                // Définir les données de session
+                SessionManager::setUserData($result['user']);
+                
+                // Gestion du "Se souvenir de moi"
+                if ($remember) {
+                    $token = generateToken();
+                    setcookie('remember_token', $token, time() + (30 * 24 * 3600), '/', '', false, true);
+                    // Ici vous pourriez sauvegarder le token en base pour une reconnexion automatique
+                }
+                
+                // Redirection selon le rôle
+                $userRole = $result['user']['role_principal'];
+                $redirectMap = [
+                    'Administrateur' => 'vues/admin/index.php',
+                    'Responsable Scolarité' => 'vues/responsable_scolarite/index.php',
+                    'Chargé Communication' => 'vues/charge_communication/index.php',
+                    'Commission' => 'vues/commission/index.php',
+                    'Secrétaire' => 'vues/secretaire/index.php',
+                    'Enseignant' => 'vues/enseignant/index.php',
+                    'Étudiant' => 'vues/etudiant/index.php'
+                ];
+                
+                $redirectUrl = $redirectMap[$userRole] ?? 'vues/etudiant/index.php';
+                
+                // Si c'est une requête AJAX
+                if (isAjaxRequest()) {
+                    jsonResponse([
+                        'success' => true,
+                        'message' => $result['message'],
+                        'redirect' => $redirectUrl
+                    ]);
+                } else {
+                    redirectTo($redirectUrl);
+                }
+            } else {
+                $error = $result['message'];
+                
+                // Réponse AJAX
+                if (isAjaxRequest()) {
+                    jsonResponse([
+                        'success' => false,
+                        'message' => $error,
+                        'locked' => $result['locked'] ?? false
+                    ], 400);
+                }
+            }
+        } catch (Exception $e) {
+            error_log("Erreur d'authentification: " . $e->getMessage());
+            $error = 'Erreur du système. Veuillez réessayer.';
+            
+            if (isAjaxRequest()) {
+                jsonResponse([
+                    'success' => false,
+                    'message' => $error
+                ], 500);
+            }
+        }
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -239,6 +348,29 @@
             font-size: 1rem;
         }
 
+        /* Alert Messages */
+        .alert {
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error-color);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
         /* Form Styles */
         .login-form {
             width: 100%;
@@ -419,25 +551,6 @@
             100% { transform: translate(-50%, -50%) rotate(360deg); }
         }
 
-        /* Sign Up Link */
-        .signup-link {
-            text-align: center;
-            color: var(--gray-600);
-            font-size: 0.95rem;
-        }
-
-        .signup-link a {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: 600;
-            transition: var(--transition);
-        }
-
-        .signup-link a:hover {
-            color: var(--primary-dark);
-            text-decoration: underline;
-        }
-
         /* Error States */
         .form-input.error {
             border-color: var(--error-color);
@@ -461,64 +574,6 @@
         .form-input.success {
             border-color: var(--success-color);
             background: rgba(16, 185, 129, 0.05);
-        }
-
-        /* Social Login */
-        .social-login {
-            margin: 1.5rem 0;
-        }
-
-        .divider {
-            text-align: center;
-            margin: 1.5rem 0;
-            position: relative;
-            color: var(--gray-500);
-            font-size: 0.9rem;
-        }
-
-        .divider::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: var(--gray-200);
-            z-index: 1;
-        }
-
-        .divider span {
-            background: var(--white);
-            padding: 0 1rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .social-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
-        .social-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.75rem;
-            padding: 0.75rem;
-            border: 2px solid var(--gray-200);
-            border-radius: var(--border-radius);
-            background: var(--white);
-            color: var(--gray-700);
-            text-decoration: none;
-            font-weight: 600;
-            transition: var(--transition);
-        }
-
-        .social-btn:hover {
-            border-color: var(--gray-300);
-            background: var(--gray-50);
-            transform: translateY(-1px);
         }
 
         /* Responsive Design */
@@ -548,10 +603,6 @@
             .form-header h1 {
                 font-size: 1.75rem;
             }
-            
-            .social-buttons {
-                grid-template-columns: 1fr;
-            }
         }
 
         /* Accessibility */
@@ -567,7 +618,6 @@
 
         .form-input:focus,
         .submit-btn:focus,
-        .social-btn:focus,
         .back-home:focus {
             outline: 2px solid var(--primary-color);
             outline-offset: 2px;
@@ -638,7 +688,28 @@
                 <p>Connectez-vous à votre compte pour continuer</p>
             </div>
 
-            <form class="login-form" id="loginForm">
+            <?php if ($error): ?>
+                <div class="alert alert-error">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="15" y1="9" x2="9" y2="15"/>
+                        <line x1="9" y1="9" x2="15" y2="15"/>
+                    </svg>
+                    <?php echo htmlspecialchars($error); ?>
+                </div>
+            <?php endif; ?>
+
+            <?php if ($success): ?>
+                <div class="alert alert-success">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 12l2 2 4-4"/>
+                        <circle cx="12" cy="12" r="10"/>
+                    </svg>
+                    <?php echo htmlspecialchars($success); ?>
+                </div>
+            <?php endif; ?>
+
+            <form class="login-form" id="loginForm" method="POST" action="">
                 <!-- Email Field -->
                 <div class="form-group">
                     <label for="email" class="form-label">Adresse email</label>
@@ -653,6 +724,7 @@
                             name="email" 
                             class="form-input"
                             placeholder="votre@email.com"
+                            value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>"
                             required
                             autocomplete="email"
                         >
@@ -708,46 +780,14 @@
                         <input type="checkbox" id="remember" name="remember">
                         <span>Se souvenir de moi</span>
                     </label>
-                    <a href="#forgot" class="forgot-password">Mot de passe oublié ?</a>
+                    <a href="forgot-password.php" class="forgot-password">Mot de passe oublié ?</a>
                 </div>
 
                 <!-- Submit Button -->
                 <button type="submit" class="submit-btn" id="submitBtn">
                     Se connecter
                 </button>
-
-                <!-- Divider -->
-                <!--div-- class="divider">
-                    <span>ou continuer avec</span>
-                </!--div-->
-
-                <!-- Social Login -->
-                <!--div-- class="social-buttons">
-                    <a href="#google" class="social-btn">
-                        <svg width="20" height="20" viewBox="0 0 24 24">
-                            <path fill="#4285f4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                            <path fill="#34a853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                            <path fill="#fbbc05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                            <path fill="#ea4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                        </svg>
-                        Google
-                    </a>
-                    <a href="#microsoft" class="social-btn">
-                        <svg width="20" height="20" viewBox="0 0 24 24">
-                            <path fill="#f25022" d="M1 1h10v10H1z"/>
-                            <path fill="#00a4ef" d="M13 1h10v10H13z"/>
-                            <path fill="#7fba00" d="M1 13h10v10H1z"/>
-                            <path fill="#ffb900" d="M13 13h10v10H13z"/>
-                        </svg>
-                        Microsoft
-                    </a>
-                </!--div-->
             </form>
-
-            <!-- Sign Up Link -->
-            <!--div-- class="signup-link">
-                Pas encore de compte ? <a href="register.html">Créer un compte</a>
-            </-div-->
         </div>
     </div>
 
@@ -778,7 +818,7 @@
                     this.validatePassword();
                 });
 
-                // Form submission
+                // Form submission avec AJAX
                 this.form.addEventListener('submit', (e) => {
                     this.handleSubmit(e);
                 });
@@ -790,14 +830,6 @@
 
                 this.passwordInput.addEventListener('input', () => {
                     this.clearError('password');
-                });
-
-                // Social login handlers
-                document.querySelectorAll('.social-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        this.handleSocialLogin(btn.getAttribute('href').slice(1));
-                    });
                 });
             }
 
@@ -887,41 +919,42 @@
                 this.setLoading(true);
 
                 try {
-                    // Simulate API call
-                    await this.simulateLogin();
+                    // Envoyer la requête AJAX
+                    const formData = new FormData(this.form);
                     
-                    this.showNotification('Connexion réussie ! Redirection en cours...', 'success');
+                    const response = await fetch('login.php', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
                     
-                    // Simulate redirect after success
-                    setTimeout(() => {
-                        console.log('Redirection vers dashboard.php');
-                        // window.location.href = 'dashboard.php';
-                    }, 1500);
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        this.showNotification(result.message, 'success');
+                        
+                        // Redirection après succès
+                        setTimeout(() => {
+                            window.location.href = result.redirect;
+                        }, 1500);
+                    } else {
+                        this.showNotification(result.message, 'error');
+                        
+                        if (result.locked) {
+                            this.submitBtn.disabled = true;
+                            setTimeout(() => {
+                                this.submitBtn.disabled = false;
+                            }, 30000); // 30 secondes
+                        }
+                    }
                     
                 } catch (error) {
-                    this.showNotification(error.message || 'Erreur lors de la connexion', 'error');
+                    console.error('Erreur:', error);
+                    this.showNotification('Erreur de connexion au serveur', 'error');
                 } finally {
                     this.setLoading(false);
-                }
-            }
-
-            async simulateLogin() {
-                // Simulate network delay
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                
-                const email = this.emailInput.value.trim();
-                const password = this.passwordInput.value;
-                
-                // Simulate different scenarios
-                if (email === 'demo@masoutenance.com' && password === 'demo123') {
-                    return { success: true, message: 'Connexion réussie' };
-                } else if (email === 'error@test.com') {
-                    throw new Error('Compte temporairement suspendu');
-                } else if (password === 'wrongpass') {
-                    throw new Error('Mot de passe incorrect');
-                } else {
-                    // Default success for demo
-                    return { success: true, message: 'Connexion réussie' };
                 }
             }
 
@@ -933,15 +966,6 @@
                     this.submitBtn.classList.remove('loading');
                     this.submitBtn.disabled = false;
                 }
-            }
-
-            handleSocialLogin(provider) {
-                this.showNotification(`Connexion avec ${provider} en cours...`, 'info');
-                
-                // Simulate social login
-                setTimeout(() => {
-                    this.showNotification(`Fonctionnalité ${provider} bientôt disponible !`, 'info');
-                }, 1000);
             }
 
             showNotification(message, type = 'info') {
@@ -974,190 +998,16 @@
             }
         }
 
-        // Enhanced form interactions
-        class FormEnhancements {
-            constructor() {
-                this.init();
-            }
-
-            init() {
-                // Auto-focus first input
-                setTimeout(() => {
-                    document.getElementById('email').focus();
-                }, 500);
-
-                // Keyboard shortcuts
-                document.addEventListener('keydown', (e) => {
-                    // Enter to submit form when focused on input
-                    if (e.key === 'Enter' && (e.target.tagName === 'INPUT')) {
-                        const form = document.getElementById('loginForm');
-                        const submitBtn = document.getElementById('submitBtn');
-                        if (!submitBtn.disabled) {
-                            form.dispatchEvent(new Event('submit'));
-                        }
-                    }
-                    
-                    // Escape to clear form
-                    if (e.key === 'Escape') {
-                        this.clearForm();
-                    }
-                });
-
-                // Enhanced input interactions
-                this.addInputAnimations();
-                
-                // Demo credentials helper
-                //this.addDemoHelper();
-            }
-
-            addInputAnimations() {
-                const inputs = document.querySelectorAll('.form-input');
-                
-                inputs.forEach(input => {
-                    input.addEventListener('focus', () => {
-                        input.parentElement.style.transform = 'scale(1.02)';
-                    });
-                    
-                    input.addEventListener('blur', () => {
-                        input.parentElement.style.transform = 'scale(1)';
-                    });
-                });
-            }
-
-            /*addDemoHelper() {
-                // Create demo helper button
-                const demoBtn = document.createElement('button');
-                demoBtn.type = 'button';
-                demoBtn.className = 'demo-btn';
-                demoBtn.textContent = '✨ Utiliser les identifiants de démo';
-                demoBtn.style.cssText = `
-                    position: absolute;
-                    bottom: 2rem;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    background: rgba(255, 255, 255, 0.1);
-                    color: white;
-                    border: 1px solid rgba(255, 255, 255, 0.2);
-                    padding: 0.5rem 1rem;
-                    border-radius: 6px;
-                    font-size: 0.85rem;
-                    cursor: pointer;
-                    backdrop-filter: blur(10px);
-                    transition: all 0.3s ease;
-                    z-index: 10;
-                `;
-                
-                demoBtn.addEventListener('click', () => {
-                    document.getElementById('email').value = 'demo@masoutenance.com';
-                    document.getElementById('password').value = 'demo123';
-                    
-                    // Trigger validation
-                    document.getElementById('email').dispatchEvent(new Event('blur'));
-                    document.getElementById('password').dispatchEvent(new Event('input'));
-                    
-                    // Show notification
-                    window.loginForm.showNotification('Identifiants de démo chargés !', 'success');
-                });
-                
-                demoBtn.addEventListener('mouseenter', () => {
-                    demoBtn.style.background = 'rgba(255, 255, 255, 0.2)';
-                    demoBtn.style.transform = 'translateX(-50%) translateY(-2px)';
-                });
-                
-                demoBtn.addEventListener('mouseleave', () => {
-                    demoBtn.style.background = 'rgba(255, 255, 255, 0.1)';
-                    demoBtn.style.transform = 'translateX(-50%)';
-                });
-                
-                document.body.appendChild(demoBtn);
-            }*/
-
-            clearForm() {
-                document.getElementById('loginForm').reset();
-                document.querySelectorAll('.form-input').forEach(input => {
-                    input.classList.remove('error', 'success');
-                });
-                document.querySelectorAll('.error-message').forEach(error => {
-                    error.style.display = 'none';
-                });
-            }
-        }
-
-        // Progressive enhancement for better UX
-        class ProgressiveEnhancement {
-            constructor() {
-                this.init();
-            }
-
-            init() {
-                // Add smooth page transitions
-                this.addPageTransitions();
-                
-                // Add connection status indicator
-                this.addConnectionStatus();
-                
-                // Prefetch critical resources
-                this.prefetchResources();
-                
-                // Add form persistence
-                this.addFormPersistence();
-            }
-
-            addPageTransitions() {
-                document.body.style.opacity = '0';
-                document.body.style.transform = 'translateY(20px)';
-                
-                window.addEventListener('load', () => {
-                    setTimeout(() => {
-                        document.body.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                        document.body.style.opacity = '1';
-                        document.body.style.transform = 'translateY(0)';
-                    }, 100);
-                });
-            }
-
-            addConnectionStatus() {
-                window.addEventListener('online', () => {
-                    window.loginForm?.showNotification('Connexion rétablie', 'success');
-                });
-                
-                window.addEventListener('offline', () => {
-                    window.loginForm?.showNotification('Connexion perdue - mode hors ligne', 'warning');
-                });
-            }
-
-            prefetchResources() {
-                // Prefetch dashboard resources
-                const link = document.createElement('link');
-                link.rel = 'prefetch';
-                link.href = 'dashboard.html';
-                document.head.appendChild(link);
-            }
-
-            addFormPersistence() {
-                const emailInput = document.getElementById('email');
-                
-                // Load saved email
-                const savedEmail = localStorage.getItem('masoutenance_email');
-                if (savedEmail) {
-                    emailInput.value = savedEmail;
-                }
-                
-                // Save email on input
-                emailInput.addEventListener('input', () => {
-                    localStorage.setItem('masoutenance_email', emailInput.value);
-                });
-            }
-        }
-
-        // Initialize everything when DOM is ready
+        // Initialize when DOM is ready
         document.addEventListener('DOMContentLoaded', () => {
             window.loginForm = new LoginForm();
-            new FormEnhancements();
-            new ProgressiveEnhancement();
+            
+            // Auto-focus first input
+            setTimeout(() => {
+                document.getElementById('email').focus();
+            }, 500);
             
             console.log('🎓 MaSoutenance Login - Ready!');
-            console.log('💡 Astuce: Utilisez demo@masoutenance.com / demo123 pour tester');
         });
 
         // Handle back button
@@ -1172,24 +1022,6 @@
             setTimeout(() => {
                 window.location.href = 'index.php';
             }, 300);
-        });
-
-        // Easter egg - Konami code for admin access
-        let konamiCode = [];
-        const konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'];
-
-        document.addEventListener('keydown', (e) => {
-            konamiCode.push(e.code);
-            if (konamiCode.length > konamiSequence.length) {
-                konamiCode.shift();
-            }
-            
-            if (konamiCode.join('') === konamiSequence.join('')) {
-                document.getElementById('email').value = 'admin@masoutenance.com';
-                document.getElementById('password').value = 'admin2024';
-                window.loginForm.showNotification('🔑 Mode Admin activé !', 'success');
-                konamiCode = [];
-            }
         });
     </script>
 </body>
