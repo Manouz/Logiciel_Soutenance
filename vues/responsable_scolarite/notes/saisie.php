@@ -1,72 +1,159 @@
 <?php
+/**
+ * Saisie des Notes - Responsable Scolarité
+ * Système de Validation Académique - UFHB Cocody
+ */
 
-session_start();
+require_once '../../../config/constants.php';
 require_once '../../../config/database.php';
-require_once '../../../config/session.php';
+require_once '../../../includes/functions.php';
 
-// Vérifier si l'utilisateur est connecté et a le bon rôle
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'responsable_scolarite') {
-    header('Location: ../../../login.php');
-    exit();
+SessionManager::start();
+
+if (!SessionManager::isLoggedIn()) {
+    redirectTo('../../../login.php');
 }
 
-// Traitement des formulaires
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['action'])) {
-        switch ($_POST['action']) {
-            case 'saisie_individuelle':
-                // Traitement saisie individuelle
-                $etudiant_id = $_POST['etudiant_id'];
-                $ue_id = $_POST['ue_id'];
-                $type_note = $_POST['type_note'];
-                $note = $_POST['note'];
-                $coefficient = $_POST['coefficient'];
-                
-                $stmt = $pdo->prepare("INSERT INTO notes (etudiant_id, ue_id, type_note, note, coefficient, date_saisie, saisi_par) VALUES (?, ?, ?, ?, ?, NOW(), ?)");
-                $stmt->execute([$etudiant_id, $ue_id, $type_note, $note, $coefficient, $_SESSION['user_id']]);
-                
-                $success_message = "Note saisie avec succès !";
-                break;
-                
-            case 'saisie_masse':
-                // Traitement saisie en masse
-                $notes_data = json_decode($_POST['notes_data'], true);
-                
-                $pdo->beginTransaction();
-                try {
-                    $stmt = $pdo->prepare("INSERT INTO notes (etudiant_id, ue_id, type_note, note, coefficient, date_saisie, saisi_par) VALUES (?, ?, ?, ?, ?, NOW(), ?)");
-                    
-                    foreach ($notes_data as $note_data) {
-                        $stmt->execute([
-                            $note_data['etudiant_id'],
-                            $note_data['ue_id'],
-                            $note_data['type_note'],
-                            $note_data['note'],
-                            $note_data['coefficient'],
-                            $_SESSION['user_id']
-                        ]);
+$userRole = SessionManager::getUserRole();
+if ($userRole !== 'Responsable Scolarité') {
+    redirectTo('../../../login.php');
+}
+
+$userId = SessionManager::getUserId();
+$userName = SessionManager::getUserName();
+
+try {
+    $db = Database::getInstance();
+    
+    // Traitement des formulaires
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (isset($_POST['action'])) {
+            switch ($_POST['action']) {
+                case 'saisie_individuelle':
+                    try {
+                        $etudiant_id = $_POST['etudiant_id'];
+                        $ue_id = $_POST['ue_id'];
+                        $type_evaluation = $_POST['type_evaluation'];
+                        $note = (float)$_POST['note'];
+                        $coefficient = (int)$_POST['coefficient'];
+                        $commentaire = $_POST['commentaire'] ?? '';
+                        
+                        // Créer l'évaluation
+                        $evaluationData = [
+                            'ue_id' => $ue_id,
+                            'type_evaluation' => $type_evaluation,
+                            'coefficient' => $coefficient,
+                            'date_evaluation' => date('Y-m-d'),
+                            'date_creation' => date('Y-m-d H:i:s'),
+                            'cree_par' => $userId
+                        ];
+                        $evaluation_id = $db->insert('evaluations', $evaluationData);
+                        
+                        // Créer la note
+                        $noteData = [
+                            'evaluation_id' => $evaluation_id,
+                            'etudiant_id' => $etudiant_id,
+                            'note' => $note,
+                            'commentaire' => $commentaire,
+                            'date_saisie' => date('Y-m-d H:i:s'),
+                            'saisi_par' => $userId
+                        ];
+                        $db->insert('notes_evaluations', $noteData);
+                        
+                        // Mettre à jour la moyenne de l'étudiant
+                        updateStudentAverage($db, $etudiant_id);
+                        
+                        $success_message = "Note saisie avec succès !";
+                    } catch (Exception $e) {
+                        $error_message = "Erreur lors de la saisie : " . $e->getMessage();
                     }
+                    break;
                     
-                    $pdo->commit();
-                    $success_message = "Notes saisies en masse avec succès !";
-                } catch (Exception $e) {
-                    $pdo->rollback();
-                    $error_message = "Erreur lors de la saisie en masse : " . $e->getMessage();
-                }
-                break;
+                case 'saisie_masse':
+                    try {
+                        $notes_data = json_decode($_POST['notes_data'], true);
+                        
+                        $db->beginTransaction();
+                        
+                        $etudiants_updated = [];
+                        
+                        foreach ($notes_data as $note_data) {
+                            // Créer l'évaluation
+                            $evaluationData = [
+                                'ue_id' => $note_data['ue_id'],
+                                'type_evaluation' => $note_data['type_evaluation'],
+                                'coefficient' => $note_data['coefficient'],
+                                'date_evaluation' => date('Y-m-d'),
+                                'date_creation' => date('Y-m-d H:i:s'),
+                                'cree_par' => $userId
+                            ];
+                            $evaluation_id = $db->insert('evaluations', $evaluationData);
+                            
+                            // Créer la note
+                            $noteDataInsert = [
+                                'evaluation_id' => $evaluation_id,
+                                'etudiant_id' => $note_data['etudiant_id'],
+                                'note' => $note_data['note'],
+                                'date_saisie' => date('Y-m-d H:i:s'),
+                                'saisi_par' => $userId
+                            ];
+                            $db->insert('notes_evaluations', $noteDataInsert);
+                            
+                            $etudiants_updated[] = $note_data['etudiant_id'];
+                        }
+                        
+                        // Mettre à jour les moyennes des étudiants concernés
+                        foreach (array_unique($etudiants_updated) as $etudiant_id) {
+                            updateStudentAverage($db, $etudiant_id);
+                        }
+                        
+                        $db->commit();
+                        $success_message = "Notes saisies en masse avec succès !";
+                    } catch (Exception $e) {
+                        $db->rollback();
+                        $error_message = "Erreur lors de la saisie en masse : " . $e->getMessage();
+                    }
+                    break;
+            }
         }
     }
+    
+    // Récupération des données pour les formulaires
+    $niveaux = $db->fetchAll("SELECT * FROM niveaux ORDER BY nom");
+    $specialites = $db->fetchAll("SELECT * FROM specialites ORDER BY nom");
+    $ues = $db->fetchAll("SELECT * FROM ues ORDER BY nom");
+    
+    $etudiants = $db->fetchAll("
+        SELECT e.*, ip.nom, ip.prenoms, n.nom as niveau_nom, s.nom as specialite_nom 
+        FROM etudiants e 
+        JOIN informations_personnelles ip ON e.utilisateur_id = ip.utilisateur_id
+        JOIN niveaux n ON e.niveau_id = n.niveau_id 
+        JOIN specialites s ON e.specialite_id = s.specialite_id 
+        WHERE e.est_actif = 1
+        ORDER BY ip.nom, ip.prenoms
+    ");
+    
+} catch (Exception $e) {
+    error_log("Erreur récupération données: " . $e->getMessage());
+    $niveaux = [];
+    $specialites = [];
+    $ues = [];
+    $etudiants = [];
 }
 
-// Récupération des données pour les formulaires
-$niveaux = $pdo->query("SELECT * FROM niveaux ORDER BY nom")->fetchAll();
-$specialites = $pdo->query("SELECT * FROM specialites ORDER BY nom")->fetchAll();
-$ues = $pdo->query("SELECT * FROM ues ORDER BY nom")->fetchAll();
-$etudiants = $pdo->query("SELECT e.*, n.nom as niveau_nom, s.nom as specialite_nom 
-                         FROM etudiants e 
-                         JOIN niveaux n ON e.niveau_id = n.id 
-                         JOIN specialites s ON e.specialite_id = s.id 
-                         ORDER BY e.nom, e.prenom")->fetchAll();
+// Fonction pour mettre à jour la moyenne d'un étudiant
+function updateStudentAverage($db, $etudiant_id) {
+    $result = $db->fetch("
+        SELECT AVG(ne.note * e.coefficient) / AVG(e.coefficient) as moyenne 
+        FROM notes_evaluations ne
+        JOIN evaluations e ON ne.evaluation_id = e.evaluation_id
+        WHERE ne.etudiant_id = ? AND ne.note IS NOT NULL
+    ", [$etudiant_id]);
+    
+    if ($result && $result['moyenne'] !== null) {
+        $db->update('etudiants', ['moyenne_generale' => round($result['moyenne'], 2)], 'utilisateur_id = ?', [$etudiant_id]);
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -147,6 +234,28 @@ $etudiants = $pdo->query("SELECT e.*, n.nom as niveau_nom, s.nom as specialite_n
             opacity: 0.9;
         }
 
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
         .tabs {
             display: flex;
             background: var(--white);
@@ -204,7 +313,7 @@ $etudiants = $pdo->query("SELECT e.*, n.nom as niveau_nom, s.nom as specialite_n
 
         .card-header {
             display: flex;
-            justify-content: between;
+            justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
             padding-bottom: 1rem;
@@ -305,24 +414,6 @@ $etudiants = $pdo->query("SELECT e.*, n.nom as niveau_nom, s.nom as specialite_n
             background: #059669;
         }
 
-        .btn-warning {
-            background: var(--warning-color);
-            color: var(--white);
-        }
-
-        .btn-warning:hover {
-            background: #d97706;
-        }
-
-        .btn-info {
-            background: var(--info-color);
-            color: var(--white);
-        }
-
-        .btn-info:hover {
-            background: #2563eb;
-        }
-
         .btn-group {
             display: flex;
             gap: 1rem;
@@ -331,258 +422,18 @@ $etudiants = $pdo->query("SELECT e.*, n.nom as niveau_nom, s.nom as specialite_n
             margin-top: 2rem;
         }
 
-        .alert {
-            padding: 1rem 1.5rem;
-            border-radius: var(--border-radius);
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-weight: 500;
-        }
-
-        .alert-success {
-            background: #d1fae5;
-            color: #065f46;
-            border: 1px solid #a7f3d0;
-        }
-
-        .alert-error {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #fca5a5;
-        }
-
-        .table-container {
-            overflow-x: auto;
-            border-radius: var(--border-radius);
-            border: 1px solid var(--gray-200);
-        }
-
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            background: var(--white);
-        }
-
-        .table th {
-            background: var(--gray-50);
-            padding: 1rem;
-            text-align: left;
-            font-weight: 600;
-            color: var(--gray-700);
-            border-bottom: 2px solid var(--gray-200);
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-
-        .table td {
-            padding: 1rem;
-            border-bottom: 1px solid var(--gray-200);
-            vertical-align: middle;
-        }
-
-        .table tbody tr:hover {
-            background: var(--gray-50);
-        }
-
-        .badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
+        .validation-error {
+            color: var(--error-color);
             font-size: 0.875rem;
-            font-weight: 600;
-            text-align: center;
-            white-space: nowrap;
+            margin-top: 0.25rem;
         }
 
-        .badge-success {
-            background: #d1fae5;
-            color: #065f46;
+        .note-valid {
+            border-color: var(--success-color);
         }
 
-        .badge-warning {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .badge-error {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .badge-info {
-            background: #dbeafe;
-            color: #1e40af;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            backdrop-filter: blur(4px);
-        }
-
-        .modal.active {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background: var(--white);
-            border-radius: var(--border-radius);
-            padding: 2rem;
-            max-width: 90vw;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: var(--shadow-lg);
-            position: relative;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--gray-100);
-        }
-
-        .modal-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
-
-        .close-modal {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--gray-500);
-            padding: 0.5rem;
-            border-radius: var(--border-radius);
-            transition: var(--transition);
-        }
-
-        .close-modal:hover {
-            background: var(--gray-100);
-            color: var(--gray-700);
-        }
-
-        .file-upload {
-            border: 2px dashed var(--gray-300);
-            border-radius: var(--border-radius);
-            padding: 2rem;
-            text-align: center;
-            transition: var(--transition);
-            cursor: pointer;
-        }
-
-        .file-upload:hover {
-            border-color: var(--primary-color);
-            background: var(--primary-light);
-        }
-
-        .file-upload.dragover {
-            border-color: var(--primary-color);
-            background: var(--primary-light);
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: var(--gray-200);
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 1rem 0;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--primary-color);
-            transition: width 0.3s ease;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: var(--white);
-            padding: 1.5rem;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            text-align: center;
-            border-left: 4px solid var(--primary-color);
-        }
-
-        .stat-number {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            color: var(--gray-600);
-            font-weight: 500;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-
-            .header {
-                padding: 1.5rem;
-            }
-
-            .header h1 {
-                font-size: 2rem;
-            }
-
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .btn-group {
-                justify-content: stretch;
-            }
-
-            .btn-group .btn {
-                flex: 1;
-            }
-
-            .tabs {
-                flex-direction: column;
-            }
-
-            .tab {
-                justify-content: flex-start;
-            }
-        }
-
-        .note-input {
-            width: 80px;
-            text-align: center;
-        }
-
-        .student-row {
-            transition: var(--transition);
-        }
-
-        .student-row:hover {
-            background: var(--primary-light);
+        .note-invalid {
+            border-color: var(--error-color);
         }
 
         .bulk-actions {
@@ -622,18 +473,107 @@ $etudiants = $pdo->query("SELECT e.*, n.nom as niveau_nom, s.nom as specialite_n
             flex-wrap: wrap;
         }
 
-        .validation-error {
-            color: var(--error-color);
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
+        .table-container {
+            overflow-x: auto;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--gray-200);
         }
 
-        .note-valid {
-            border-color: var(--success-color);
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--white);
         }
 
-        .note-invalid {
-            border-color: var(--error-color);
+        .table th {
+            background: var(--gray-50);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--gray-700);
+            border-bottom: 2px solid var(--gray-200);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+            vertical-align: middle;
+        }
+
+        .table tbody tr:hover {
+            background: var(--gray-50);
+        }
+
+        .note-input {
+            width: 80px;
+            text-align: center;
+        }
+
+        .student-row {
+            transition: var(--transition);
+        }
+
+        .student-row:hover {
+            background: var(--primary-light);
+        }
+
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .badge-info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header {
+                padding: 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-group {
+                justify-content: stretch;
+            }
+
+            .btn-group .btn {
+                flex: 1;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab {
+                justify-content: flex-start;
+            }
         }
     </style>
 </head>
@@ -647,14 +587,14 @@ $etudiants = $pdo->query("SELECT e.*, n.nom as niveau_nom, s.nom as specialite_n
         <?php if (isset($success_message)): ?>
             <div class="alert alert-success">
                 <i class="fas fa-check-circle"></i>
-                <?php echo $success_message; ?>
+                <?= htmlspecialchars($success_message) ?>
             </div>
         <?php endif; ?>
 
         <?php if (isset($error_message)): ?>
             <div class="alert alert-error">
                 <i class="fas fa-exclamation-circle"></i>
-                <?php echo $error_message; ?>
+                <?= htmlspecialchars($error_message) ?>
             </div>
         <?php endif; ?>
 
@@ -666,14 +606,6 @@ $etudiants = $pdo->query("SELECT e.*, n.nom as niveau_nom, s.nom as specialite_n
             <button class="tab" onclick="showTab('saisie-masse')">
                 <i class="fas fa-users"></i>
                 Saisie en Masse
-            </button>
-            <button class="tab" onclick="showTab('import-excel')">
-                <i class="fas fa-file-excel"></i>
-                Import Excel
-            </button>
-            <button class="tab" onclick="showTab('validation')">
-                <i class="fas fa-check-double"></i>
-                Validation
             </button>
         </div>
 
@@ -699,8 +631,8 @@ $etudiants = $pdo->query("SELECT e.*, n.nom as niveau_nom, s.nom as specialite_n
                             <select name="etudiant_id" class="form-select" required>
                                 <option value="">Sélectionner un étudiant</option>
                                 <?php foreach ($etudiants as $etudiant): ?>
-                                    <option value="<?php echo $etudiant['id']; ?>">
-                                        <?php echo $etudiant['nom'] . ' ' . $etudiant['prenom'] . ' - ' . $etudiant['niveau_nom'] . ' ' . $etudiant['specialite_nom']; ?>
+                                    <option value="<?= $etudiant['utilisateur_id'] ?>">
+                                        <?= htmlspecialchars($etudiant['nom'] . ' ' . $etudiant['prenoms'] . ' - ' . $etudiant['niveau_nom'] . ' ' . $etudiant['specialite_nom']) ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
@@ -714,8 +646,8 @@ $etudiants = $pdo->query("SELECT e.*, n.nom as niveau_nom, s.nom as specialite_n
                             <select name="ue_id" class="form-select" required>
                                 <option value="">Sélectionner une UE</option>
                                 <?php foreach ($ues as $ue): ?>
-                                    <option value="<?php echo $ue['id']; ?>">
-                                        <?php echo $ue['code'] . ' - ' . $ue['nom']; ?>
+                                    <option value="<?= $ue['ue_id'] ?>">
+                                        <?= htmlspecialchars($ue['code'] . ' - ' . $ue['nom']) ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
@@ -724,9 +656,9 @@ $etudiants = $pdo->query("SELECT e.*, n.nom as niveau_nom, s.nom as specialite_n
                         <div class="form-group">
                             <label class="form-label">
                                 <i class="fas fa-clipboard-list"></i>
-                                Type de Note
+                                Type d'Évaluation
                             </label>
-                            <select name="type_note" class="form-select" required>
+                            <select name="type_evaluation" class="form-select" required>
                                 <option value="">Sélectionner le type</option>
                                 <option value="CC">Contrôle Continu</option>
                                 <option value="TP">Travaux Pratiques</option>
@@ -801,26 +733,26 @@ $etudiants = $pdo->query("SELECT e.*, n.nom as niveau_nom, s.nom as specialite_n
                         <select class="form-select" id="filterNiveau" onchange="filterStudents()">
                             <option value="">Tous les niveaux</option>
                             <?php foreach ($niveaux as $niveau): ?>
-                                <option value="<?php echo $niveau['id']; ?>"><?php echo $niveau['nom']; ?></option>
+                                <option value="<?= $niveau['niveau_id'] ?>"><?= htmlspecialchars($niveau['nom']) ?></option>
                             <?php endforeach; ?>
                         </select>
 
                         <select class="form-select" id="filterSpecialite" onchange="filterStudents()">
                             <option value="">Toutes les spécialités</option>
                             <?php foreach ($specialites as $specialite): ?>
-                                <option value="<?php echo $specialite['id']; ?>"><?php echo $specialite['nom']; ?></option>
+                                <option value="<?= $specialite['specialite_id'] ?>"><?= htmlspecialchars($specialite['nom']) ?></option>
                             <?php endforeach; ?>
                         </select>
 
                         <select class="form-select" id="bulkUE" required>
                             <option value="">Sélectionner une UE</option>
                             <?php foreach ($ues as $ue): ?>
-                                <option value="<?php echo $ue['id']; ?>"><?php echo $ue['code'] . ' - ' . $ue['nom']; ?></option>
+                                <option value="<?= $ue['ue_id'] ?>"><?= htmlspecialchars($ue['code'] . ' - ' . $ue['nom']) ?></option>
                             <?php endforeach; ?>
                         </select>
 
-                        <select class="form-select" id="bulkTypeNote" required>
-                            <option value="">Type de note</option>
+                        <select class="form-select" id="bulkTypeEvaluation" required>
+                            <option value="">Type d'évaluation</option>
                             <option value="CC">Contrôle Continu</option>
                             <option value="TP">Travaux Pratiques</option>
                             <option value="Examen">Examen</option>
@@ -848,32 +780,32 @@ $etudiants = $pdo->query("SELECT e.*, n.nom as niveau_nom, s.nom as specialite_n
                         <tbody id="studentsTableBody">
                             <?php foreach ($etudiants as $etudiant): ?>
                                 <tr class="student-row" 
-                                    data-niveau="<?php echo $etudiant['niveau_id']; ?>"
-                                    data-specialite="<?php echo $etudiant['specialite_id']; ?>"
-                                    data-nom="<?php echo strtolower($etudiant['nom'] . ' ' . $etudiant['prenom']); ?>">
+                                    data-niveau="<?= $etudiant['niveau_id'] ?>"
+                                    data-specialite="<?= $etudiant['specialite_id'] ?>"
+                                    data-nom="<?= strtolower($etudiant['nom'] . ' ' . $etudiant['prenoms']) ?>">
                                     <td>
                                         <input type="checkbox" class="student-checkbox" 
-                                               value="<?php echo $etudiant['id']; ?>">
+                                               value="<?= $etudiant['utilisateur_id'] ?>">
                                     </td>
                                     <td>
-                                        <strong><?php echo $etudiant['nom'] . ' ' . $etudiant['prenom']; ?></strong><br>
-                                        <small class="text-muted"><?php echo $etudiant['numero_etudiant']; ?></small>
+                                        <strong><?= htmlspecialchars($etudiant['nom'] . ' ' . $etudiant['prenoms']) ?></strong><br>
+                                        <small class="text-muted"><?= htmlspecialchars($etudiant['numero_etudiant']) ?></small>
                                     </td>
-                                    <td><?php echo $etudiant['niveau_nom']; ?></td>
-                                    <td><?php echo $etudiant['specialite_nom']; ?></td>
+                                    <td><?= htmlspecialchars($etudiant['niveau_nom']) ?></td>
+                                    <td><?= htmlspecialchars($etudiant['specialite_nom']) ?></td>
                                     <td>
                                         <input type="number" class="form-input note-input" 
                                                min="0" max="20" step="0.25"
-                                               data-student="<?php echo $etudiant['id']; ?>"
+                                               data-student="<?= $etudiant['utilisateur_id'] ?>"
                                                onchange="validateBulkNote(this)">
                                     </td>
                                     <td>
                                         <input type="number" class="form-input" style="width: 80px;"
                                                min="1" max="10" value="1"
-                                               data-student="<?php echo $etudiant['id']; ?>">
+                                               data-student="<?= $etudiant['utilisateur_id'] ?>">
                                     </td>
                                     <td>
-                                        <span class="badge badge-info" id="status-<?php echo $etudiant['id']; ?>">
+                                        <span class="badge badge-info" id="status-<?= $etudiant['utilisateur_id'] ?>">
                                             En attente
                                         </span>
                                     </td>
@@ -884,11 +816,7 @@ $etudiants = $pdo->query("SELECT e.*, n.nom as niveau_nom, s.nom as specialite_n
                 </div>
 
                 <div class="btn-group">
-                    <button type="button" class="btn btn-warning" onclick="validateAllNotes()">
-                        <i class="fas fa-check-double"></i>
-                        Valider Toutes les Notes
-                    </button>
-                    <button type="button" class="btn btn-primary" onclick="saveBulkNotes()">
+                    <button type="button" class="btn btn-success" onclick="saveBulkNotes()">
                         <i class="fas fa-save"></i>
                         Enregistrer les Notes Sélectionnées
                     </button>
@@ -896,190 +824,17 @@ $etudiants = $pdo->query("SELECT e.*, n.nom as niveau_nom, s.nom as specialite_n
             </div>
         </div>
 
-        <!-- Import Excel -->
-        <div id="import-excel" class="tab-content">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">
-                        <i class="fas fa-file-import"></i>
-                        Import depuis Excel
-                    </h2>
-                </div>
-
-                <div class="file-upload" id="fileUpload" onclick="document.getElementById('excelFile').click()">
-                    <i class="fas fa-cloud-upload-alt" style="font-size: 3rem; color: var(--gray-400); margin-bottom: 1rem;"></i>
-                    <h3>Glissez-déposez votre fichier Excel ici</h3>
-                    <p>ou cliquez pour sélectionner un fichier</p>
-                    <small>Formats acceptés: .xlsx, .xls, .csv</small>
-                    <input type="file" id="excelFile" accept=".xlsx,.xls,.csv" style="display: none;" onchange="handleFileSelect(this)">
-                </div>
-
-                <div id="uploadProgress" style="display: none;">
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progressFill"></div>
-                    </div>
-                    <p id="progressText">Téléchargement en cours...</p>
-                </div>
-
-                <div id="previewSection" style="display: none;">
-                    <h3>Aperçu des données</h3>
-                    <div class="table-container">
-                        <table class="table" id="previewTable">
-                            <thead id="previewHeader"></thead>
-                            <tbody id="previewBody"></tbody>
-                        </table>
-                    </div>
-                    
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-secondary" onclick="cancelImport()">
-                            <i class="fas fa-times"></i>
-                            Annuler
-                        </button>
-                        <button type="button" class="btn btn-primary" onclick="confirmImport()">
-                            <i class="fas fa-check"></i>
-                            Confirmer l'Import
-                        </button>
-                    </div>
-                </div>
-
-                <div class="card" style="margin-top: 2rem;">
-                    <div class="card-header">
-                        <h3 class="card-title">
-                            <i class="fas fa-info-circle"></i>
-                            Format du fichier Excel
-                        </h3>
-                    </div>
-                    <p>Votre fichier Excel doit contenir les colonnes suivantes :</p>
-                    <ul style="margin: 1rem 0; padding-left: 2rem;">
-                        <li><strong>numero_etudiant</strong> : Numéro d'étudiant</li>
-                        <li><strong>nom</strong> : Nom de l'étudiant</li>
-                        <li><strong>prenom</strong> : Prénom de l'étudiant</li>
-                        <li><strong>ue_code</strong> : Code de l'UE</li>
-                        <li><strong>type_note</strong> : Type de note (CC, TP, Examen, etc.)</li>
-                        <li><strong>note</strong> : Note sur 20</li>
-                        <li><strong>coefficient</strong> : Coefficient de la note</li>
-                    </ul>
-                    
-                    <div class="btn-group">
-                        <a href="#" class="btn btn-info" onclick="downloadTemplate()">
-                            <i class="fas fa-download"></i>
-                            Télécharger le Modèle Excel
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Validation -->
-        <div id="validation" class="tab-content">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">
-                        <i class="fas fa-clipboard-check"></i>
-                        Validation des Notes
-                    </h2>
-                </div>
-
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-number" id="notesEnAttente">0</div>
-                        <div class="stat-label">Notes en Attente</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="notesValidees">0</div>
-                        <div class="stat-label">Notes Validées</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="notesRejetees">0</div>
-                        <div class="stat-label">Notes Rejetées</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="totalNotes">0</div>
-                        <div class="stat-label">Total Notes</div>
-                    </div>
-                </div>
-
-                <div class="bulk-actions">
-                    <div class="filter-group">
-                        <select class="form-select" id="filterStatut">
-                            <option value="">Tous les statuts</option>
-                            <option value="en_attente">En attente</option>
-                            <option value="validee">Validée</option>
-                            <option value="rejetee">Rejetée</option>
-                        </select>
-
-                        <select class="form-select" id="filterUEValidation">
-                            <option value="">Toutes les UE</option>
-                            <?php foreach ($ues as $ue): ?>
-                                <option value="<?php echo $ue['id']; ?>"><?php echo $ue['code'] . ' - ' . $ue['nom']; ?></option>
-                            <?php endforeach; ?>
-                        </select>
-
-                        <button class="btn btn-success" onclick="validateSelectedNotes()">
-                            <i class="fas fa-check"></i>
-                            Valider Sélectionnées
-                        </button>
-
-                        <button class="btn btn-warning" onclick="rejectSelectedNotes()">
-                            <i class="fas fa-times"></i>
-                            Rejeter Sélectionnées
-                        </button>
-                    </div>
-                </div>
-
-                <div class="table-container">
-                    <table class="table" id="validationTable">
-                        <thead>
-                            <tr>
-                                <th>
-                                    <input type="checkbox" id="selectAllValidation" onchange="toggleSelectAllValidation()">
-                                </th>
-                                <th>Date Saisie</th>
-                                <th>Étudiant</th>
-                                <th>UE</th>
-                                <th>Type</th>
-                                <th>Note</th>
-                                <th>Coefficient</th>
-                                <th>Saisi par</th>
-                                <th>Statut</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="validationTableBody">
-                            <!-- Les données seront chargées via JavaScript -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal de Confirmation -->
-    <div id="confirmModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="confirmTitle">Confirmation</h3>
-                <button class="close-modal" onclick="closeModal('confirmModal')">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div id="confirmMessage"></div>
-            <div class="btn-group">
-                <button class="btn btn-secondary" onclick="closeModal('confirmModal')">
-                    Annuler
-                </button>
-                <button class="btn btn-primary" id="confirmButton">
-                    Confirmer
-                </button>
-            </div>
+        <div style="text-align: center; margin-top: 2rem;">
+            <a href="../index.php" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i>
+                Retour au tableau de bord
+            </a>
         </div>
     </div>
 
     <script>
         // Variables globales
         let currentTab = 'saisie-individuelle';
-        let importData = [];
-        let validationData = [];
 
         // Gestion des onglets
         function showTab(tabName) {
@@ -1098,11 +853,6 @@ $etudiants = $pdo->query("SELECT e.*, n.nom as niveau_nom, s.nom as specialite_n
             event.target.classList.add('active');
             
             currentTab = tabName;
-            
-            // Charger les données spécifiques à l'onglet
-            if (tabName === 'validation') {
-                loadValidationData();
-            }
         }
 
         // Validation des notes
@@ -1187,40 +937,13 @@ $etudiants = $pdo->query("SELECT e.*, n.nom as niveau_nom, s.nom as specialite_n
             });
         }
 
-        function toggleSelectAllValidation() {
-            const selectAll = document.getElementById('selectAllValidation');
-            const checkboxes = document.querySelectorAll('.validation-checkbox');
-            
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = selectAll.checked;
-            });
-        }
-
-        // Validation de toutes les notes
-        function validateAllNotes() {
-            const noteInputs = document.querySelectorAll('.note-input');
-            let allValid = true;
-            
-            noteInputs.forEach(input => {
-                if (input.value !== '' && !validateBulkNote(input)) {
-                    allValid = false;
-                }
-            });
-            
-            if (allValid) {
-                showAlert('success', 'Toutes les notes saisies sont valides !');
-            } else {
-                showAlert('error', 'Certaines notes ne sont pas valides. Veuillez les corriger.');
-            }
-        }
-
         // Sauvegarde en masse
         function saveBulkNotes() {
             const ueId = document.getElementById('bulkUE').value;
-            const typeNote = document.getElementById('bulkTypeNote').value;
+            const typeEvaluation = document.getElementById('bulkTypeEvaluation').value;
             
-            if (!ueId || !typeNote) {
-                showAlert('error', 'Veuillez sélectionner une UE et un type de note.');
+            if (!ueId || !typeEvaluation) {
+                alert('Veuillez sélectionner une UE et un type d\'évaluation.');
                 return;
             }
             
@@ -1237,7 +960,7 @@ $etudiants = $pdo->query("SELECT e.*, n.nom as niveau_nom, s.nom as specialite_n
                     notesData.push({
                         etudiant_id: studentId,
                         ue_id: ueId,
-                        type_note: typeNote,
+                        type_evaluation: typeEvaluation,
                         note: noteInput.value,
                         coefficient: coeffInput.value
                     });
@@ -1245,320 +968,31 @@ $etudiants = $pdo->query("SELECT e.*, n.nom as niveau_nom, s.nom as specialite_n
             });
             
             if (notesData.length === 0) {
-                showAlert('error', 'Aucune note valide sélectionnée.');
+                alert('Aucune note valide sélectionnée.');
                 return;
             }
             
             // Confirmation
-            showConfirmModal(
-                'Confirmer la sauvegarde',
-                `Êtes-vous sûr de vouloir enregistrer ${notesData.length} note(s) ?`,
-                () => {
-                    // Créer un formulaire caché pour envoyer les données
-                    const form = document.createElement('form');
-                    form.method = 'POST';
-                    form.style.display = 'none';
-                    
-                    const actionInput = document.createElement('input');
-                    actionInput.name = 'action';
-                    actionInput.value = 'saisie_masse';
-                    form.appendChild(actionInput);
-                    
-                    const dataInput = document.createElement('input');
-                    dataInput.name = 'notes_data';
-                    dataInput.value = JSON.stringify(notesData);
-                    form.appendChild(dataInput);
-                    
-                    document.body.appendChild(form);
-                    form.submit();
-                }
-            );
-        }
-
-        // Gestion des fichiers
-        function handleFileSelect(input) {
-            const file = input.files[0];
-            if (!file) return;
-            
-            const allowedTypes = [
-                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                'application/vnd.ms-excel',
-                'text/csv'
-            ];
-            
-            if (!allowedTypes.includes(file.type)) {
-                showAlert('error', 'Format de fichier non supporté. Utilisez .xlsx, .xls ou .csv');
-                return;
-            }
-            
-            // Simuler le téléchargement
-            showUploadProgress();
-            
-            // Ici, vous ajouteriez la logique pour traiter le fichier Excel
-            setTimeout(() => {
-                hideUploadProgress();
-                showPreview();
-            }, 2000);
-        }
-
-        function showUploadProgress() {
-            document.getElementById('uploadProgress').style.display = 'block';
-            let progress = 0;
-            
-            const interval = setInterval(() => {
-                progress += 10;
-                document.getElementById('progressFill').style.width = progress + '%';
-                document.getElementById('progressText').textContent = `Téléchargement en cours... ${progress}%`;
+            if (confirm(`Êtes-vous sûr de vouloir enregistrer ${notesData.length} note(s) ?`)) {
+                // Créer un formulaire caché pour envoyer les données
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.style.display = 'none';
                 
-                if (progress >= 100) {
-                    clearInterval(interval);
-                }
-            }, 200);
-        }
-
-        function hideUploadProgress() {
-            document.getElementById('uploadProgress').style.display = 'none';
-        }
-
-        function showPreview() {
-            // Données d'exemple pour la prévisualisation
-            const sampleData = [
-                ['12345', 'Dupont', 'Jean', 'INF101', 'CC', '15.5', '2'],
-                ['12346', 'Martin', 'Marie', 'INF101', 'CC', '17.0', '2'],
-                ['12347', 'Bernard', 'Paul', 'INF101', 'CC', '12.5', '2']
-            ];
-            
-            const headers = ['Numéro', 'Nom', 'Prénom', 'UE', 'Type', 'Note', 'Coeff'];
-            
-            // Construire le tableau de prévisualisation
-            const headerRow = document.getElementById('previewHeader');
-            headerRow.innerHTML = headers.map(h => `<th>${h}</th>`).join('');
-            
-            const bodyRows = document.getElementById('previewBody');
-            bodyRows.innerHTML = sampleData.map(row => 
-                `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`
-            ).join('');
-            
-            document.getElementById('previewSection').style.display = 'block';
-        }
-
-        function cancelImport() {
-            document.getElementById('previewSection').style.display = 'none';
-            document.getElementById('excelFile').value = '';
-        }
-
-        function confirmImport() {
-            showAlert('success', 'Import réalisé avec succès !');
-            cancelImport();
-        }
-
-        function downloadTemplate() {
-            // Ici, vous ajouteriez la logique pour générer et télécharger le modèle Excel
-            showAlert('info', 'Téléchargement du modèle Excel...');
-        }
-
-        // Chargement des données de validation
-        function loadValidationData() {
-            // Ici, vous ajouteriez un appel AJAX pour charger les données
-            // Pour la démo, on utilise des données fictives
-            const sampleValidationData = [
-                {
-                    id: 1,
-                    date_saisie: '2024-01-15 10:30:00',
-                    etudiant: 'Dupont Jean',
-                    ue: 'INF101 - Programmation',
-                    type: 'CC',
-                    note: 15.5,
-                    coefficient: 2,
-                    saisi_par: 'Prof. Martin',
-                    statut: 'en_attente'
-                },
-                // ... plus de données
-            ];
-            
-            updateValidationTable(sampleValidationData);
-            updateValidationStats(sampleValidationData);
-        }
-
-        function updateValidationTable(data) {
-            const tbody = document.getElementById('validationTableBody');
-            tbody.innerHTML = data.map(item => `
-                <tr>
-                    <td><input type="checkbox" class="validation-checkbox" value="${item.id}"></td>
-                    <td>${new Date(item.date_saisie).toLocaleString('fr-FR')}</td>
-                    <td>${item.etudiant}</td>
-                    <td>${item.ue}</td>
-                    <td>${item.type}</td>
-                    <td>${item.note}/20</td>
-                    <td>${item.coefficient}</td>
-                    <td>${item.saisi_par}</td>
-                    <td>
-                        <span class="badge badge-${getStatusClass(item.statut)}">
-                            ${getStatusText(item.statut)}
-                        </span>
-                    </td>
-                    <td>
-                        <button class="btn btn-success btn-sm" onclick="validateNote(${item.id})">
-                            <i class="fas fa-check"></i>
-                        </button>
-                        <button class="btn btn-warning btn-sm" onclick="rejectNote(${item.id})">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function updateValidationStats(data) {
-            const stats = data.reduce((acc, item) => {
-                acc.total++;
-                acc[item.statut]++;
-                return acc;
-            }, { total: 0, en_attente: 0, validee: 0, rejetee: 0 });
-            
-            document.getElementById('notesEnAttente').textContent = stats.en_attente || 0;
-            document.getElementById('notesValidees').textContent = stats.validee || 0;
-            document.getElementById('notesRejetees').textContent = stats.rejetee || 0;
-            document.getElementById('totalNotes').textContent = stats.total;
-        }
-
-        function getStatusClass(status) {
-            const classes = {
-                'en_attente': 'info',
-                'validee': 'success',
-                'rejetee': 'error'
-            };
-            return classes[status] || 'info';
-        }
-
-        function getStatusText(status) {
-            const texts = {
-                'en_attente': 'En attente',
-                'validee': 'Validée',
-                'rejetee': 'Rejetée'
-            };
-            return texts[status] || 'Inconnu';
-        }
-
-        function validateNote(id) {
-            showConfirmModal(
-                'Valider la note',
-                'Êtes-vous sûr de vouloir valider cette note ?',
-                () => {
-                    // Ici, vous ajouteriez l'appel AJAX pour valider la note
-                    showAlert('success', 'Note validée avec succès !');
-                    loadValidationData();
-                }
-            );
-        }
-
-        function rejectNote(id) {
-            showConfirmModal(
-                'Rejeter la note',
-                'Êtes-vous sûr de vouloir rejeter cette note ?',
-                () => {
-                    // Ici, vous ajouteriez l'appel AJAX pour rejeter la note
-                    showAlert('warning', 'Note rejetée.');
-                    loadValidationData();
-                }
-            );
-        }
-
-        function validateSelectedNotes() {
-            const selected = document.querySelectorAll('.validation-checkbox:checked');
-            if (selected.length === 0) {
-                showAlert('error', 'Aucune note sélectionnée.');
-                return;
+                const actionInput = document.createElement('input');
+                actionInput.name = 'action';
+                actionInput.value = 'saisie_masse';
+                form.appendChild(actionInput);
+                
+                const dataInput = document.createElement('input');
+                dataInput.name = 'notes_data';
+                dataInput.value = JSON.stringify(notesData);
+                form.appendChild(dataInput);
+                
+                document.body.appendChild(form);
+                form.submit();
             }
-            
-            showConfirmModal(
-                'Valider les notes sélectionnées',
-                `Êtes-vous sûr de vouloir valider ${selected.length} note(s) ?`,
-                () => {
-                    showAlert('success', `${selected.length} note(s) validée(s) avec succès !`);
-                    loadValidationData();
-                }
-            );
         }
-
-        function rejectSelectedNotes() {
-            const selected = document.querySelectorAll('.validation-checkbox:checked');
-            if (selected.length === 0) {
-                showAlert('error', 'Aucune note sélectionnée.');
-                return;
-            }
-            
-            showConfirmModal(
-                'Rejeter les notes sélectionnées',
-                `Êtes-vous sûr de vouloir rejeter ${selected.length} note(s) ?`,
-                () => {
-                    showAlert('warning', `${selected.length} note(s) rejetée(s).`);
-                    loadValidationData();
-                }
-            );
-        }
-
-        // Utilitaires
-        function showAlert(type, message) {
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type}`;
-            alertDiv.innerHTML = `
-                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
-                ${message}
-            `;
-            
-            const container = document.querySelector('.container');
-            container.insertBefore(alertDiv, container.firstChild.nextSibling);
-            
-            setTimeout(() => {
-                alertDiv.remove();
-            }, 5000);
-        }
-
-        function showConfirmModal(title, message, onConfirm) {
-            document.getElementById('confirmTitle').textContent = title;
-            document.getElementById('confirmMessage').innerHTML = `<p>${message}</p>`;
-            document.getElementById('confirmButton').onclick = () => {
-                closeModal('confirmModal');
-                onConfirm();
-            };
-            document.getElementById('confirmModal').classList.add('active');
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-        }
-
-        // Gestion du drag & drop
-        const fileUpload = document.getElementById('fileUpload');
-        
-        fileUpload.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            fileUpload.classList.add('dragover');
-        });
-        
-        fileUpload.addEventListener('dragleave', () => {
-            fileUpload.classList.remove('dragover');
-        });
-        
-        fileUpload.addEventListener('drop', (e) => {
-            e.preventDefault();
-            fileUpload.classList.remove('dragover');
-            
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                document.getElementById('excelFile').files = files;
-                handleFileSelect(document.getElementById('excelFile'));
-            }
-        });
-
-        // Initialisation
-        document.addEventListener('DOMContentLoaded', function() {
-            // Charger les données initiales si nécessaire
-            if (currentTab === 'validation') {
-                loadValidationData();
-            }
-        });
     </script>
 </body>
 </html>
