@@ -32,3 +32,385 @@ Stack trace:
 #0 C:\wamp64\www\Logiciel_Soutenance\login.php(8): require_once()
 #1 {main}
   thrown in C:\wamp64\www\Logiciel_Soutenance\includes\functions.php on line 8
+[29-Jun-2025 20:46:49 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\notes\saisie.php on line 8
+[29-Jun-2025 20:46:49 Africa/Abidjan] PHP Stack trace:
+[29-Jun-2025 20:46:49 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\notes\saisie.php:0
+[29-Jun-2025 20:46:51 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\notes\consultation.php on line 8
+[29-Jun-2025 20:46:51 Africa/Abidjan] PHP Stack trace:
+[29-Jun-2025 20:46:51 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\notes\consultation.php:0
+[29-Jun-2025 20:46:56 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\rapports\suivi.php on line 8
+[29-Jun-2025 20:46:56 Africa/Abidjan] PHP Stack trace:
+[29-Jun-2025 20:46:56 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\rapports\suivi.php:0
+[29-Jun-2025 20:46:58 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\statistiques.php on line 8
+[29-Jun-2025 20:46:58 Africa/Abidjan] PHP Stack trace:
+[29-Jun-2025 20:46:58 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\statistiques.php:0
+[29-Jun-2025 20:47:09 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\notes\saisie.php on line 8
+[29-Jun-2025 20:47:09 Africa/Abidjan] PHP Stack trace:
+[29-Jun-2025 20:47:09 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\notes\saisie.php:0
+[29-Jun-2025 20:47:11 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\notes\consultation.php on line 8
+[29-Jun-2025 20:47:11 Africa/Abidjan] PHP Stack trace:
+[29-Jun-2025 20:47:11 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\notes\consultation.php:0
+[30-Jun-2025 00:26:34 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 00:26:34 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 00:26:56 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 00:26:56 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 00:27:25 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 00:27:25 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 00:27:26 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\notes\saisie.php on line 8
+[30-Jun-2025 00:27:26 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 00:27:26 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\notes\saisie.php:0
+[30-Jun-2025 00:27:26 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 00:27:26 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 00:31:42 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 00:31:42 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 00:51:09 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 00:51:09 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 00:52:53 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 00:52:53 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 00:57:59 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 00:57:59 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 00:58:11 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 00:58:11 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 01:52:23 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\secretaire\index.php on line 12
+[30-Jun-2025 01:52:23 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 01:52:23 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\secretaire\index.php:0
+[30-Jun-2025 01:52:23 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 01:52:23 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\secretaire\index.php on line 12
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\secretaire\index.php:0
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\secretaire\index.php on line 12
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\secretaire\index.php:0
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\secretaire\index.php on line 12
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\secretaire\index.php:0
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\secretaire\index.php on line 12
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\secretaire\index.php:0
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\secretaire\index.php on line 12
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\secretaire\index.php:0
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\secretaire\index.php on line 12
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\secretaire\index.php:0
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\secretaire\index.php on line 12
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\secretaire\index.php:0
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\secretaire\index.php on line 12
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\secretaire\index.php:0
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\secretaire\index.php on line 12
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\secretaire\index.php:0
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\secretaire\index.php on line 12
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\secretaire\index.php:0
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\secretaire\index.php on line 12
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 01:55:24 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\secretaire\index.php:0
+[30-Jun-2025 02:27:22 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 02:27:22 Africa/Abidjan] Erreur dashboard secrétaire: Erreur lors de l'exécution de la requête
+[30-Jun-2025 02:28:10 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 02:28:10 Africa/Abidjan] Erreur dashboard secrétaire: Erreur lors de l'exécution de la requête
+[30-Jun-2025 02:30:56 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 02:30:56 Africa/Abidjan] Erreur dashboard secrétaire: Erreur lors de l'exécution de la requête
+[30-Jun-2025 02:31:15 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 02:31:15 Africa/Abidjan] Erreur dashboard secrétaire: Erreur lors de l'exécution de la requête
+[30-Jun-2025 02:31:17 Africa/Abidjan] PHP Warning:  Undefined array key "QUERY_STRING" in C:\wamp64\www\Logiciel_Soutenance\vues\secretaire\soutenances\planning.php on line 643
+[30-Jun-2025 02:31:17 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 02:31:17 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\secretaire\soutenances\planning.php:0
+[30-Jun-2025 02:31:22 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 02:31:22 Africa/Abidjan] Erreur dashboard secrétaire: Erreur lors de l'exécution de la requête
+[30-Jun-2025 02:31:31 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 02:31:31 Africa/Abidjan] Erreur dashboard secrétaire: Erreur lors de l'exécution de la requête
+[30-Jun-2025 02:31:59 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 02:31:59 Africa/Abidjan] Erreur dashboard secrétaire: Erreur lors de l'exécution de la requête
+[30-Jun-2025 02:32:12 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 02:32:12 Africa/Abidjan] Erreur dashboard secrétaire: Erreur lors de l'exécution de la requête
+[30-Jun-2025 02:46:06 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 02:46:06 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 02:46:24 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 02:46:24 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 02:57:38 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 02:57:38 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 02:57:39 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\statistiques.php on line 6
+[30-Jun-2025 02:57:39 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 02:57:39 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\statistiques.php:0
+[30-Jun-2025 02:57:39 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 02:57:39 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 02:57:41 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\statistiques.php on line 6
+[30-Jun-2025 02:57:41 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 02:57:41 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\statistiques.php:0
+[30-Jun-2025 02:57:41 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 02:57:41 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 02:57:43 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\statistiques.php on line 6
+[30-Jun-2025 02:57:43 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 02:57:43 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\statistiques.php:0
+[30-Jun-2025 02:57:43 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 02:57:43 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 02:57:45 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\statistiques.php on line 6
+[30-Jun-2025 02:57:45 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 02:57:45 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\statistiques.php:0
+[30-Jun-2025 02:57:45 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 02:57:45 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 02:57:46 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\statistiques.php on line 6
+[30-Jun-2025 02:57:46 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 02:57:46 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\statistiques.php:0
+[30-Jun-2025 02:57:46 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 02:57:46 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 02:57:46 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\statistiques.php on line 6
+[30-Jun-2025 02:57:46 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 02:57:46 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\statistiques.php:0
+[30-Jun-2025 02:57:46 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 02:57:46 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 02:57:46 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\statistiques.php on line 6
+[30-Jun-2025 02:57:46 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 02:57:46 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\statistiques.php:0
+[30-Jun-2025 02:57:46 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 02:57:46 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 02:57:55 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 02:57:55 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 02:57:58 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\statistiques.php on line 6
+[30-Jun-2025 02:57:58 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 02:57:58 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\statistiques.php:0
+[30-Jun-2025 02:57:58 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 02:57:58 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 02:57:59 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\statistiques.php on line 6
+[30-Jun-2025 02:57:59 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 02:57:59 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\statistiques.php:0
+[30-Jun-2025 02:57:59 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 02:57:59 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 02:57:59 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\statistiques.php on line 6
+[30-Jun-2025 02:57:59 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 02:57:59 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\statistiques.php:0
+[30-Jun-2025 02:57:59 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 02:57:59 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 02:57:59 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\statistiques.php on line 6
+[30-Jun-2025 02:57:59 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 02:57:59 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\statistiques.php:0
+[30-Jun-2025 02:57:59 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 02:57:59 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 02:58:00 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\statistiques.php on line 6
+[30-Jun-2025 02:58:00 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 02:58:00 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\statistiques.php:0
+[30-Jun-2025 02:58:00 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 02:58:00 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 02:58:00 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\statistiques.php on line 6
+[30-Jun-2025 02:58:00 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 02:58:00 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\statistiques.php:0
+[30-Jun-2025 02:58:00 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 02:58:00 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 02:58:02 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\rapports\suivi.php on line 8
+[30-Jun-2025 02:58:02 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 02:58:02 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\rapports\suivi.php:0
+[30-Jun-2025 02:58:02 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 02:58:02 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 02:58:03 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\rapports\suivi.php on line 8
+[30-Jun-2025 02:58:03 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 02:58:03 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\rapports\suivi.php:0
+[30-Jun-2025 02:58:03 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 02:58:03 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 02:58:03 Africa/Abidjan] PHP Warning:  Undefined array key "role" in C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\rapports\suivi.php on line 8
+[30-Jun-2025 02:58:03 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 02:58:03 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\responsable_scolarite\rapports\suivi.php:0
+[30-Jun-2025 02:58:03 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 02:58:03 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:14:10 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:14:10 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:14:12 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:14:12 Africa/Abidjan] Erreur statistiques: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:14:46 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:14:46 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:17:37 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:17:37 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:17:38 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:17:38 Africa/Abidjan] Erreur statistiques: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:17:40 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:17:40 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:17:42 Africa/Abidjan] Erreur SQL: SQLSTATE[42S02]: Base table or view not found: 1146 La table 'validation_soutenance.niveaux' n'existe pas - SQL: 
+        SELECT r.*, ip.nom, ip.prenoms, e.numero_etudiant,
+               niv.nom as niveau_nom, s.nom as specialite_nom,
+               st.nom as statut_nom,
+               enc_ip.nom as encadrant_nom, enc_ip.prenoms as encadrant_prenoms
+        FROM rapports r
+        JOIN etudiants et ON r.etudiant_id = et.utilisateur_id
+        JOIN informations_personnelles ip ON et.utilisateur_id = ip.utilisateur_id
+        JOIN niveaux niv ON et.niveau_id = niv.niveau_id
+        JOIN specialites s ON et.specialite_id = s.specialite_id
+        JOIN statuts st ON r.statut_id = st.statut_id
+        LEFT JOIN utilisateurs enc_u ON r.encadrant_id = enc_u.utilisateur_id
+        LEFT JOIN informations_personnelles enc_ip ON enc_u.utilisateur_id = enc_ip.utilisateur_id
+        ORDER BY r.date_depot DESC
+    
+[30-Jun-2025 03:17:42 Africa/Abidjan] Erreur suivi rapports: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:17:46 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:17:46 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:17:49 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:17:49 Africa/Abidjan] Erreur éligibilité: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:18:28 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:18:28 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:18:38 Africa/Abidjan] Erreur SQL: SQLSTATE[42000]: Syntax error or access violation: 1064 Erreur de syntaxe près de 'DISTINCT etudiant_id' à la ligne 1 - SQL: SELECT COUNT(*) as total FROM notes_evaluations WHERE DISTINCT etudiant_id
+[30-Jun-2025 03:18:38 Africa/Abidjan] Erreur consultation notes: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:18:51 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:18:51 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:18:54 Africa/Abidjan] Erreur SQL: SQLSTATE[42S02]: Base table or view not found: 1146 La table 'validation_soutenance.niveaux' n'existe pas - SQL: SELECT * FROM niveaux ORDER BY nom
+[30-Jun-2025 03:18:54 Africa/Abidjan] Erreur récupération données: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:19:05 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:19:05 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:19:08 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:19:08 Africa/Abidjan] Erreur gestion étudiants: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:19:15 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:19:15 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:19:47 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:19:47 Africa/Abidjan] Erreur dashboard secrétaire: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:20:18 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:20:18 Africa/Abidjan] Erreur dashboard secrétaire: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:20:23 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:20:23 Africa/Abidjan] Erreur dashboard secrétaire: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:20:38 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:20:38 Africa/Abidjan] Erreur dashboard secrétaire: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:21:33 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:21:33 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:21:36 Africa/Abidjan] Erreur SQL: SQLSTATE[42000]: Syntax error or access violation: 1064 Erreur de syntaxe près de 'DISTINCT etudiant_id' à la ligne 1 - SQL: SELECT COUNT(*) as total FROM notes_evaluations WHERE DISTINCT etudiant_id
+[30-Jun-2025 03:21:36 Africa/Abidjan] Erreur consultation notes: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:21:50 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:21:50 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:21:59 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:21:59 Africa/Abidjan] Erreur éligibilité: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:22:07 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:22:07 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:22:10 Africa/Abidjan] Erreur SQL: SQLSTATE[42S02]: Base table or view not found: 1146 La table 'validation_soutenance.niveaux' n'existe pas - SQL: SELECT * FROM niveaux ORDER BY nom
+[30-Jun-2025 03:22:10 Africa/Abidjan] Erreur récupération données: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:22:13 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:22:13 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:22:22 Africa/Abidjan] Erreur SQL: SQLSTATE[42S02]: Base table or view not found: 1146 La table 'validation_soutenance.niveaux' n'existe pas - SQL: 
+        SELECT r.*, ip.nom, ip.prenoms, e.numero_etudiant,
+               niv.nom as niveau_nom, s.nom as specialite_nom,
+               st.nom as statut_nom,
+               enc_ip.nom as encadrant_nom, enc_ip.prenoms as encadrant_prenoms
+        FROM rapports r
+        JOIN etudiants et ON r.etudiant_id = et.utilisateur_id
+        JOIN informations_personnelles ip ON et.utilisateur_id = ip.utilisateur_id
+        JOIN niveaux niv ON et.niveau_id = niv.niveau_id
+        JOIN specialites s ON et.specialite_id = s.specialite_id
+        JOIN statuts st ON r.statut_id = st.statut_id
+        LEFT JOIN utilisateurs enc_u ON r.encadrant_id = enc_u.utilisateur_id
+        LEFT JOIN informations_personnelles enc_ip ON enc_u.utilisateur_id = enc_ip.utilisateur_id
+        ORDER BY r.date_depot DESC
+    
+[30-Jun-2025 03:22:22 Africa/Abidjan] Erreur suivi rapports: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:22:27 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:22:27 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:22:33 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:22:33 Africa/Abidjan] Erreur éligibilité: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:22:36 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:22:36 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:22:38 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:22:38 Africa/Abidjan] Erreur gestion étudiants: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:22:41 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:22:41 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:40:19 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:40:19 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:41:57 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:41:57 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:42:25 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:42:25 Africa/Abidjan] Erreur gestion étudiants: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:42:30 Africa/Abidjan] Erreur SQL: SQLSTATE[42S02]: Base table or view not found: 1146 La table 'validation_soutenance.niveaux' n'existe pas - SQL: SELECT * FROM niveaux ORDER BY nom
+[30-Jun-2025 03:42:30 Africa/Abidjan] Erreur récupération données: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:42:35 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:42:35 Africa/Abidjan] Erreur statistiques: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:44:25 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:44:25 Africa/Abidjan] Erreur dashboard secrétaire: Erreur lors de l'exécution de la requête
+[30-Jun-2025 03:44:58 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 03:44:58 Africa/Abidjan] Erreur statistiques: Erreur lors de l'exécution de la requête
+[30-Jun-2025 09:39:40 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 09:39:40 Africa/Abidjan] Erreur dashboard secrétaire: Erreur lors de l'exécution de la requête
+[30-Jun-2025 09:40:05 Africa/Abidjan] PHP Warning:  Undefined array key "QUERY_STRING" in C:\wamp64\www\Logiciel_Soutenance\vues\secretaire\soutenances\planning.php on line 643
+[30-Jun-2025 09:40:05 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 09:40:05 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\secretaire\soutenances\planning.php:0
+[30-Jun-2025 09:40:16 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 09:40:16 Africa/Abidjan] Erreur dashboard secrétaire: Erreur lors de l'exécution de la requête
+[30-Jun-2025 09:40:57 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 09:40:57 Africa/Abidjan] Erreur dashboard secrétaire: Erreur lors de l'exécution de la requête
+[30-Jun-2025 09:40:59 Africa/Abidjan] PHP Warning:  Undefined array key "QUERY_STRING" in C:\wamp64\www\Logiciel_Soutenance\vues\secretaire\soutenances\planning.php on line 643
+[30-Jun-2025 09:40:59 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 09:40:59 Africa/Abidjan] PHP   1. {main}() C:\wamp64\www\Logiciel_Soutenance\vues\secretaire\soutenances\planning.php:0
+[30-Jun-2025 09:41:04 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 09:41:04 Africa/Abidjan] Erreur dashboard secrétaire: Erreur lors de l'exécution de la requête
+[30-Jun-2025 09:41:11 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 09:41:11 Africa/Abidjan] Erreur dashboard secrétaire: Erreur lors de l'exécution de la requête
+[30-Jun-2025 09:41:24 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 09:41:24 Africa/Abidjan] Erreur dashboard secrétaire: Erreur lors de l'exécution de la requête
+[30-Jun-2025 09:41:40 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 09:41:40 Africa/Abidjan] Erreur dashboard secrétaire: Erreur lors de l'exécution de la requête
+[30-Jun-2025 09:44:30 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 09:44:30 Africa/Abidjan] Erreur dashboard secrétaire: Erreur lors de l'exécution de la requête
+[30-Jun-2025 10:16:09 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 10:16:09 Africa/Abidjan] Erreur dashboard secrétaire: Erreur lors de l'exécution de la requête
+[30-Jun-2025 10:16:23 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 10:16:23 Africa/Abidjan] Erreur dashboard secrétaire: Erreur lors de l'exécution de la requête
+[30-Jun-2025 10:25:59 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 10:25:59 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 10:26:07 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 10:26:07 Africa/Abidjan] Erreur gestion étudiants: Erreur lors de l'exécution de la requête
+[30-Jun-2025 10:26:13 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 10:26:13 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 10:26:15 Africa/Abidjan] Erreur SQL: SQLSTATE[42S02]: Base table or view not found: 1146 La table 'validation_soutenance.niveaux' n'existe pas - SQL: SELECT * FROM niveaux ORDER BY nom
+[30-Jun-2025 10:26:15 Africa/Abidjan] Erreur récupération données: Erreur lors de l'exécution de la requête
+[30-Jun-2025 10:26:19 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 10:26:19 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 10:26:22 Africa/Abidjan] Erreur SQL: SQLSTATE[42000]: Syntax error or access violation: 1064 Erreur de syntaxe près de 'DISTINCT etudiant_id' à la ligne 1 - SQL: SELECT COUNT(*) as total FROM notes_evaluations WHERE DISTINCT etudiant_id
+[30-Jun-2025 10:26:22 Africa/Abidjan] Erreur consultation notes: Erreur lors de l'exécution de la requête
+[30-Jun-2025 10:26:25 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 10:26:25 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 10:26:30 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 10:26:30 Africa/Abidjan] Erreur éligibilité: Erreur lors de l'exécution de la requête
+[30-Jun-2025 10:26:33 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 10:26:33 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 10:26:38 Africa/Abidjan] Erreur SQL: SQLSTATE[42S02]: Base table or view not found: 1146 La table 'validation_soutenance.niveaux' n'existe pas - SQL: 
+        SELECT r.*, ip.nom, ip.prenoms, e.numero_etudiant,
+               niv.nom as niveau_nom, s.nom as specialite_nom,
+               st.nom as statut_nom,
+               enc_ip.nom as encadrant_nom, enc_ip.prenoms as encadrant_prenoms
+        FROM rapports r
+        JOIN etudiants et ON r.etudiant_id = et.utilisateur_id
+        JOIN informations_personnelles ip ON et.utilisateur_id = ip.utilisateur_id
+        JOIN niveaux niv ON et.niveau_id = niv.niveau_id
+        JOIN specialites s ON et.specialite_id = s.specialite_id
+        JOIN statuts st ON r.statut_id = st.statut_id
+        LEFT JOIN utilisateurs enc_u ON r.encadrant_id = enc_u.utilisateur_id
+        LEFT JOIN informations_personnelles enc_ip ON enc_u.utilisateur_id = enc_ip.utilisateur_id
+        ORDER BY r.date_depot DESC
+    
+[30-Jun-2025 10:26:38 Africa/Abidjan] Erreur suivi rapports: Erreur lors de l'exécution de la requête
+[30-Jun-2025 10:26:41 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 10:26:41 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 10:26:44 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 10:26:44 Africa/Abidjan] Erreur éligibilité: Erreur lors de l'exécution de la requête
+[30-Jun-2025 10:30:58 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'e.est_actif' inconnu dans where clause - SQL: 
+                            SELECT e.utilisateur_id, e.moyenne_generale,
+                                   COUNT(r.rapport_id) as nb_rapports,
+                                   COUNT(CASE WHEN r.statut_id = 11 THEN 1 END) as nb_rapports_valides
+                            FROM etudiants e
+                            LEFT JOIN rapports r ON e.utilisateur_id = r.etudiant_id
+                            WHERE e.est_actif = 1
+                            GROUP BY e.utilisateur_id
+                        
+[30-Jun-2025 10:30:58 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 10:30:58 Africa/Abidjan] Erreur éligibilité: Erreur lors de l'exécution de la requête
+[30-Jun-2025 10:31:08 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'e.est_actif' inconnu dans where clause - SQL: 
+                            SELECT e.utilisateur_id, e.moyenne_generale,
+                                   COUNT(r.rapport_id) as nb_rapports,
+                                   COUNT(CASE WHEN r.statut_id = 11 THEN 1 END) as nb_rapports_valides
+                            FROM etudiants e
+                            LEFT JOIN rapports r ON e.utilisateur_id = r.etudiant_id
+                            WHERE e.est_actif = 1
+                            GROUP BY e.utilisateur_id
+                        
+[30-Jun-2025 10:31:08 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 10:31:08 Africa/Abidjan] Erreur éligibilité: Erreur lors de l'exécution de la requête
+[30-Jun-2025 10:31:10 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 10:31:10 Africa/Abidjan] Erreur éligibilité: Erreur lors de l'exécution de la requête
+[30-Jun-2025 10:31:11 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 10:31:11 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
