@@ -1,12 +1,3 @@
-<?php
-// Vérification de l'authentification et des permissions
-session_start();
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    header('Location: ../../../login.php');
-    exit();
-}*/
-?>
-
 <div class="config-header">
     <button class="back-btn" onclick="history.back()">
         <i class="fas fa-arrow-left"></i>

@@ -1,5 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    
+</head>
+<style>
+.badge-creation {
+    background: #dcfce7;
+    color: #166534;
+}
 
-<div class="config-header">
+.badge-modification {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.badge-suppression {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.badge-validation {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.badge-consultation {
+    background: #f3e8ff;
+    color: #7c3aed;
+}
+
+.badge-export {
+    background: #ecfdf5;
+    color: #065f46;
+}
+
+.badge-import {
+    background: #fef2f2;
+    color: #991b1b;
+}
+
+.badge-module-utilisateurs {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.badge-module-etudiants {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.badge-module-enseignants {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.badge-module-rapports {
+    background: #f3e8ff;
+    color: #7c3aed;
+}
+
+.badge-module-soutenances {
+    background: #ecfdf5;
+    color: #065f46;
+}
+
+.badge-module-jury {
+    background: #fef2f2;
+    color: #991b1b;
+}
+
+.badge-module-administration {
+    background: #f1f5f9;
+    color: #475569;
+}
+</style> 
+<body>
+    <div class="config-header">
     <button class="back-btn" onclick="history.back()">
         <i class="fas fa-arrow-left"></i>
     </button>
@@ -392,75 +471,7 @@ function showNotification(message, type = 'info') {
     }, 5000);
 }
 </script>
+</body>
+</html>
 
-<style>
-.badge-creation {
-    background: #dcfce7;
-    color: #166534;
-}
 
-.badge-modification {
-    background: #dbeafe;
-    color: #1e40af;
-}
-
-.badge-suppression {
-    background: #fee2e2;
-    color: #991b1b;
-}
-
-.badge-validation {
-    background: #fef3c7;
-    color: #92400e;
-}
-
-.badge-consultation {
-    background: #f3e8ff;
-    color: #7c3aed;
-}
-
-.badge-export {
-    background: #ecfdf5;
-    color: #065f46;
-}
-
-.badge-import {
-    background: #fef2f2;
-    color: #991b1b;
-}
-
-.badge-module-utilisateurs {
-    background: #dbeafe;
-    color: #1e40af;
-}
-
-.badge-module-etudiants {
-    background: #dcfce7;
-    color: #166534;
-}
-
-.badge-module-enseignants {
-    background: #fef3c7;
-    color: #92400e;
-}
-
-.badge-module-rapports {
-    background: #f3e8ff;
-    color: #7c3aed;
-}
-
-.badge-module-soutenances {
-    background: #ecfdf5;
-    color: #065f46;
-}
-
-.badge-module-jury {
-    background: #fef2f2;
-    color: #991b1b;
-}
-
-.badge-module-administration {
-    background: #f1f5f9;
-    color: #475569;
-}
-</style> 

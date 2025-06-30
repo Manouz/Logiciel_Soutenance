@@ -1,6 +1,4 @@
 <?php
-
-
 class Etudiant {
     private $conn;
     private $table_name = "etudiants";

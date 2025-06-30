@@ -1,6 +1,9 @@
 <?php 
 include "../../config/database.php";
 include "../../classes/Etudiant.php";
+include "../../classes/Traitement.php";
+
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -1046,6 +1049,15 @@ body {
                                         'color' => 'stone',
                                         'status' => 'Actif',
                                         'page' => 'action'
+                                    ],
+                                    [
+                                        'id' => 18,
+                                        'title' => 'Menu',
+                                        'description' => 'Configuration de la gestion des menus en fonction du groupe utilisateur',
+                                        'icon' => 'fas fa-lock',
+                                        'color' => 'brown',
+                                        'status' => 'Actif',
+                                        'page' => 'menu'
                                     ]
                                 ];
                                 
@@ -1130,7 +1142,6 @@ body {
                         case 'traitement':
                             include("parametres_generaux/traitement.php");
                             break;
-
                         case 'posseder':
                             include("parametres_generaux/posseder.php");
                             break;
@@ -1149,6 +1160,9 @@ body {
 
                         case 'action':
                             include("parametres_generaux/action.php");
+                            break;
+                        case 'menu':
+                            include("parametres_generaux/menu.php");
                             break;
 
                         // Pages existantes dans votre système

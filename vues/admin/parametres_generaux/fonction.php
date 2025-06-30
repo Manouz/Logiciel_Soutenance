@@ -1,6 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="" href="../../../assets/css/admin/admin-style.css">
+</head>
+<style>
+.badge-enseignement {
+    background: #dbeafe;
+    color: #1e40af;
+}
 
+.badge-administration {
+    background: #dcfce7;
+    color: #166534;
+}
 
-<div class="config-header">
+.badge-technique {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.badge-direction {
+    background: #f3e8ff;
+    color: #7c3aed;
+}
+</style> 
+<body>
+    <div class="config-header">
     <button class="back-btn" onclick="history.back()">
         <i class="fas fa-arrow-left"></i>
     </button>
@@ -335,25 +362,7 @@ function showNotification(message, type = 'info') {
     }, 5000);
 }
 </script>
+</body>
+</html>
 
-<style>
-.badge-enseignement {
-    background: #dbeafe;
-    color: #1e40af;
-}
 
-.badge-administration {
-    background: #dcfce7;
-    color: #166534;
-}
-
-.badge-technique {
-    background: #fef3c7;
-    color: #92400e;
-}
-
-.badge-direction {
-    background: #f3e8ff;
-    color: #7c3aed;
-}
-</style> 

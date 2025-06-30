@@ -1,5 +1,3 @@
-
-
 <div class="config-header">
     <button class="back-btn" onclick="history.back()">
         <i class="fas fa-arrow-left"></i>
@@ -254,4 +252,4 @@ function showNotification(message, type = 'info') {
         }
     }, 5000);
 }
-</script> 
+</script>

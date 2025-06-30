@@ -1,5 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="" href="../../../assets/css/admin/admin-style.css">
 
-<div class="config-header">
+</head>
+
+<style>
+.badge-academique {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.badge-administrative {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.badge-etudiant {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.badge-externe {
+    background: #f3e8ff;
+    color: #7c3aed;
+}
+
+.permissions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 6px;
+    background: var(--gray-50);
+    transition: var(--transition);
+}
+
+.checkbox-label:hover {
+    background: var(--gray-100);
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+}
+
+.permissions-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+}
+
+.permission-badge {
+    background: var(--primary-light);
+    color: var(--primary-color);
+    padding: 0.125rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.member-count {
+    font-weight: 500;
+    color: var(--primary-color);
+}
+</style> 
+<body>
+    <div class="config-header">
     <button class="back-btn" onclick="history.back()">
         <i class="fas fa-arrow-left"></i>
     </button>
@@ -369,72 +446,6 @@ function showNotification(message, type = 'info') {
     }, 5000);
 }
 </script>
+</body>
+</html>
 
-<style>
-.badge-academique {
-    background: #dbeafe;
-    color: #1e40af;
-}
-
-.badge-administrative {
-    background: #dcfce7;
-    color: #166534;
-}
-
-.badge-etudiant {
-    background: #fef3c7;
-    color: #92400e;
-}
-
-.badge-externe {
-    background: #f3e8ff;
-    color: #7c3aed;
-}
-
-.permissions-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-}
-
-.checkbox-label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    cursor: pointer;
-    padding: 0.5rem;
-    border-radius: 6px;
-    background: var(--gray-50);
-    transition: var(--transition);
-}
-
-.checkbox-label:hover {
-    background: var(--gray-100);
-}
-
-.checkbox-label input[type="checkbox"] {
-    width: auto;
-    margin: 0;
-}
-
-.permissions-badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.25rem;
-}
-
-.permission-badge {
-    background: var(--primary-light);
-    color: var(--primary-color);
-    padding: 0.125rem 0.5rem;
-    border-radius: 12px;
-    font-size: 0.75rem;
-    font-weight: 500;
-}
-
-.member-count {
-    font-weight: 500;
-    color: var(--primary-color);
-}
-</style> 
