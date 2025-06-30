@@ -599,6 +599,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Header/Navbar -->
     <header class="header">
