@@ -1,0 +1,219 @@
+/* Styles globaux pour le projet */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+    padding: 0 20px;
+}
+
+/* Header (si vous en avez un simple) */
+header {
+    background: #333;
+    color: #fff;
+    padding-top: 30px;
+    min-height: 70px;
+    border-bottom: #0779e4 3px solid;
+}
+
+header a {
+    color: #fff;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 16px;
+}
+
+header ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    float: right;
+}
+
+header li {
+    display: inline;
+    padding: 0 20px 0 20px;
+}
+
+header #branding {
+    float: left;
+}
+
+header #branding h1 {
+    margin: 0;
+}
+
+/* Styles pour les formulaires */
+.form-label {
+    font-weight: bold;
+}
+
+.btn {
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+.btn-secondary:hover {
+    background-color: #545b62;
+}
+
+.btn-success {
+    background-color: #28a745;
+    color: white;
+}
+.btn-success:hover {
+    background-color: #1e7e34;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+.btn-danger:hover {
+    background-color: #b02a37;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    color: #212529;
+}
+.btn-warning:hover {
+    background-color: #d39e00;
+}
+
+
+/* Tableaux */
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #212529;
+    border-collapse: collapse;
+}
+
+.table th,
+.table td {
+    padding: 0.75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+}
+
+.table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+    background-color: #e9ecef;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.075);
+}
+
+/* Modals (si vous utilisez Bootstrap, ces styles peuvent être ajustés ou complétés) */
+.modal-header {
+    border-bottom: 1px solid #dee2e6;
+}
+.modal-footer {
+    border-top: 1px solid #dee2e6;
+}
+
+
+/* Messages de feedback */
+#messages, #messagesPermissions {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+}
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+.alert-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
+
+/* Sidebar (structure de base) */
+.sidebar {
+    width: 250px;
+    background: #333;
+    color: #fff;
+    padding: 15px;
+    /* Ajouter d'autres styles pour la position, hauteur, etc. */
+}
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+.sidebar ul li a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    padding: 10px 15px;
+    border-bottom: 1px #444 dotted;
+}
+.sidebar ul li a:hover {
+    background: #555;
+}
+.sidebar ul li a .fas { /* Pour les icônes FontAwesome */
+    margin-right: 10px;
+}
+
+/* Utilitaires */
+.mt-4 {
+    margin-top: 1.5rem !important;
+}
+.mb-3 {
+    margin-bottom: 1rem !important;
+}
+.text-center {
+    text-align: center !important;
+}
+
+/* Responsive (exemple simple) */
+@media(max-width: 768px){
+    header #branding,
+    header nav,
+    header nav li,
+    .container {
+        float: none;
+        text-align: center;
+        width: 100%;
+    }
+    .sidebar {
+        width: 100%;
+        /* Ajuster pour un affichage mobile, peut-être un menu burger */
+    }
+}
+?>
