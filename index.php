@@ -618,7 +618,7 @@
             <div class="hero-text">
                 <h1>Organisez, <span class="highlight">gérez</span> <br>et <span class="highlight">réussissez</span></h1>
                 <p>Planifiez, organisez et suivez chaque étape de votre diplôme d'ingénieur avec notre plateforme intuitive et moderne</p>
-                <a href="login.php" class="btn-main" ">
+                <a href="login.php" class="btn-main" >
                     Commencez dès maintenant
                 </a>
             </div>

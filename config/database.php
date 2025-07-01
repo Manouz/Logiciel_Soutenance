@@ -425,7 +425,7 @@ class Auth {
         if ($user['compte_bloque']) {
             $blocageTime = strtotime($user['date_blocage']);
             $now = time();
-            $blocageDuration = 30 * 60; // 30 minutes
+            $blocageDuration = 1 * 60; // 30 minutes
             
             if (($now - $blocageTime) < $blocageDuration) {
                 $remainingTime = $blocageDuration - ($now - $blocageTime);

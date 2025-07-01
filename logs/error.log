@@ -414,3 +414,280 @@ Stack trace:
 [30-Jun-2025 10:31:10 Africa/Abidjan] Erreur éligibilité: Erreur lors de l'exécution de la requête
 [30-Jun-2025 10:31:11 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
 [30-Jun-2025 10:31:11 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 12:34:40 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 12:34:40 Africa/Abidjan] Erreur dashboard responsable: Erreur lors de l'exécution de la requête
+[30-Jun-2025 12:35:36 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 12:35:36 Africa/Abidjan] Erreur dashboard secrétaire: Erreur lors de l'exécution de la requête
+[30-Jun-2025 12:36:03 Africa/Abidjan] Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Champ 'est_actif' inconnu dans where clause - SQL: SELECT COUNT(*) as total FROM etudiants WHERE est_actif = 1
+[30-Jun-2025 12:36:03 Africa/Abidjan] Erreur dashboard secrétaire: Erreur lors de l'exécution de la requête
+[30-Jun-2025 12:36:28 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Undefined constant "ROLE_ADMIN" in D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:11
+Stack trace:
+#0 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php on line 11
+[30-Jun-2025 12:36:37 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Undefined constant "ROLE_ADMIN" in D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:11
+Stack trace:
+#0 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php on line 11
+[30-Jun-2025 12:36:42 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Undefined constant "ROLE_ADMIN" in D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:11
+Stack trace:
+#0 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php on line 11
+[30-Jun-2025 12:36:45 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Undefined constant "ROLE_ADMIN" in D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:11
+Stack trace:
+#0 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php on line 11
+[30-Jun-2025 12:40:11 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Undefined constant "ROLE_ADMIN" in D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:11
+Stack trace:
+#0 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php on line 11
+[30-Jun-2025 12:45:03 Africa/Abidjan] PHP Warning:  require_once(Database.php): Failed to open stream: No such file or directory in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 12:45:03 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 12:45:03 Africa/Abidjan] PHP   1. {main}() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:0
+[30-Jun-2025 12:45:03 Africa/Abidjan] PHP   2. include() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:4
+[30-Jun-2025 12:45:03 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Failed opening required 'Database.php' (include_path='.;C:\php\pear') in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php:2
+Stack trace:
+#0 D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php(4): include()
+#1 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 12:45:04 Africa/Abidjan] PHP Warning:  require_once(Database.php): Failed to open stream: No such file or directory in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 12:45:04 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 12:45:04 Africa/Abidjan] PHP   1. {main}() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:0
+[30-Jun-2025 12:45:04 Africa/Abidjan] PHP   2. include() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:4
+[30-Jun-2025 12:45:04 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Failed opening required 'Database.php' (include_path='.;C:\php\pear') in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php:2
+Stack trace:
+#0 D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php(4): include()
+#1 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 12:46:19 Africa/Abidjan] PHP Warning:  require_once(Database.php): Failed to open stream: No such file or directory in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 12:46:19 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 12:46:19 Africa/Abidjan] PHP   1. {main}() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:0
+[30-Jun-2025 12:46:19 Africa/Abidjan] PHP   2. include() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:4
+[30-Jun-2025 12:46:19 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Failed opening required 'Database.php' (include_path='.;C:\php\pear') in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php:2
+Stack trace:
+#0 D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php(4): include()
+#1 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 12:46:32 Africa/Abidjan] PHP Warning:  require_once(Database.php): Failed to open stream: No such file or directory in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 12:46:32 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 12:46:32 Africa/Abidjan] PHP   1. {main}() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:0
+[30-Jun-2025 12:46:32 Africa/Abidjan] PHP   2. include() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:4
+[30-Jun-2025 12:46:32 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Failed opening required 'Database.php' (include_path='.;C:\php\pear') in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php:2
+Stack trace:
+#0 D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php(4): include()
+#1 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 12:47:05 Africa/Abidjan] PHP Warning:  require_once(Database.php): Failed to open stream: No such file or directory in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 12:47:05 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 12:47:05 Africa/Abidjan] PHP   1. {main}() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:0
+[30-Jun-2025 12:47:05 Africa/Abidjan] PHP   2. include() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:4
+[30-Jun-2025 12:47:05 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Failed opening required 'Database.php' (include_path='.;C:\php\pear') in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php:2
+Stack trace:
+#0 D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php(4): include()
+#1 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 12:48:28 Africa/Abidjan] PHP Warning:  require_once(Database.php): Failed to open stream: No such file or directory in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 12:48:28 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 12:48:28 Africa/Abidjan] PHP   1. {main}() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:0
+[30-Jun-2025 12:48:28 Africa/Abidjan] PHP   2. include() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:4
+[30-Jun-2025 12:48:28 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Failed opening required 'Database.php' (include_path='.;C:\php\pear') in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php:2
+Stack trace:
+#0 D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php(4): include()
+#1 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 12:48:30 Africa/Abidjan] PHP Warning:  require_once(Database.php): Failed to open stream: No such file or directory in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 12:48:30 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 12:48:30 Africa/Abidjan] PHP   1. {main}() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:0
+[30-Jun-2025 12:48:30 Africa/Abidjan] PHP   2. include() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:4
+[30-Jun-2025 12:48:30 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Failed opening required 'Database.php' (include_path='.;C:\php\pear') in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php:2
+Stack trace:
+#0 D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php(4): include()
+#1 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 12:48:35 Africa/Abidjan] PHP Warning:  require_once(Database.php): Failed to open stream: No such file or directory in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 12:48:35 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 12:48:35 Africa/Abidjan] PHP   1. {main}() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:0
+[30-Jun-2025 12:48:35 Africa/Abidjan] PHP   2. include() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:4
+[30-Jun-2025 12:48:35 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Failed opening required 'Database.php' (include_path='.;C:\php\pear') in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php:2
+Stack trace:
+#0 D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php(4): include()
+#1 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 12:50:43 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Undefined constant "ROLE_ADMIN" in D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:11
+Stack trace:
+#0 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php on line 11
+[30-Jun-2025 12:50:58 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Undefined constant "ROLE_ADMIN" in D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:11
+Stack trace:
+#0 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php on line 11
+[30-Jun-2025 12:52:13 Africa/Abidjan] PHP Warning:  require_once(Database.php): Failed to open stream: No such file or directory in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 12:52:13 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 12:52:13 Africa/Abidjan] PHP   1. {main}() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:0
+[30-Jun-2025 12:52:13 Africa/Abidjan] PHP   2. include() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:4
+[30-Jun-2025 12:52:13 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Failed opening required 'Database.php' (include_path='.;C:\php\pear') in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php:2
+Stack trace:
+#0 D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php(4): include()
+#1 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 12:52:15 Africa/Abidjan] PHP Warning:  require_once(Database.php): Failed to open stream: No such file or directory in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 12:52:15 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 12:52:15 Africa/Abidjan] PHP   1. {main}() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:0
+[30-Jun-2025 12:52:15 Africa/Abidjan] PHP   2. include() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:4
+[30-Jun-2025 12:52:15 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Failed opening required 'Database.php' (include_path='.;C:\php\pear') in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php:2
+Stack trace:
+#0 D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php(4): include()
+#1 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 12:52:50 Africa/Abidjan] PHP Warning:  require_once(Database.php): Failed to open stream: No such file or directory in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 12:52:50 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 12:52:50 Africa/Abidjan] PHP   1. {main}() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:0
+[30-Jun-2025 12:52:50 Africa/Abidjan] PHP   2. include() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:4
+[30-Jun-2025 12:52:50 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Failed opening required 'Database.php' (include_path='.;C:\php\pear') in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php:2
+Stack trace:
+#0 D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php(4): include()
+#1 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 12:52:52 Africa/Abidjan] PHP Warning:  require_once(Database.php): Failed to open stream: No such file or directory in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 12:52:52 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 12:52:52 Africa/Abidjan] PHP   1. {main}() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:0
+[30-Jun-2025 12:52:52 Africa/Abidjan] PHP   2. include() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:4
+[30-Jun-2025 12:52:52 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Failed opening required 'Database.php' (include_path='.;C:\php\pear') in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php:2
+Stack trace:
+#0 D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php(4): include()
+#1 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 12:55:47 Africa/Abidjan] PHP Warning:  require_once(Database.php): Failed to open stream: No such file or directory in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 12:55:47 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 12:55:47 Africa/Abidjan] PHP   1. {main}() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:0
+[30-Jun-2025 12:55:47 Africa/Abidjan] PHP   2. include() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:4
+[30-Jun-2025 12:55:47 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Failed opening required 'Database.php' (include_path='.;C:\php\pear') in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php:2
+Stack trace:
+#0 D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php(4): include()
+#1 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 12:59:46 Africa/Abidjan] PHP Warning:  require_once(Database.php): Failed to open stream: No such file or directory in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 12:59:46 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 12:59:46 Africa/Abidjan] PHP   1. {main}() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:0
+[30-Jun-2025 12:59:46 Africa/Abidjan] PHP   2. include() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:4
+[30-Jun-2025 12:59:46 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Failed opening required 'Database.php' (include_path='.;C:\php\pear') in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php:2
+Stack trace:
+#0 D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php(4): include()
+#1 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 13:01:18 Africa/Abidjan] PHP Warning:  require_once(Database.php): Failed to open stream: No such file or directory in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 13:01:18 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 13:01:18 Africa/Abidjan] PHP   1. {main}() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:0
+[30-Jun-2025 13:01:18 Africa/Abidjan] PHP   2. include() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:4
+[30-Jun-2025 13:01:18 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Failed opening required 'Database.php' (include_path='.;C:\php\pear') in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php:2
+Stack trace:
+#0 D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php(4): include()
+#1 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 13:07:49 Africa/Abidjan] PHP Warning:  require_once(Database.php): Failed to open stream: No such file or directory in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 13:07:49 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 13:07:49 Africa/Abidjan] PHP   1. {main}() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:0
+[30-Jun-2025 13:07:49 Africa/Abidjan] PHP   2. include() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:4
+[30-Jun-2025 13:07:49 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Failed opening required 'Database.php' (include_path='.;C:\php\pear') in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php:2
+Stack trace:
+#0 D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php(4): include()
+#1 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 13:08:21 Africa/Abidjan] PHP Warning:  require_once(Database.php): Failed to open stream: No such file or directory in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 13:08:21 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 13:08:21 Africa/Abidjan] PHP   1. {main}() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:0
+[30-Jun-2025 13:08:21 Africa/Abidjan] PHP   2. include() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:4
+[30-Jun-2025 13:08:21 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Failed opening required 'Database.php' (include_path='.;C:\php\pear') in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php:2
+Stack trace:
+#0 D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php(4): include()
+#1 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 13:08:24 Africa/Abidjan] PHP Warning:  require_once(Database.php): Failed to open stream: No such file or directory in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 13:08:24 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 13:08:24 Africa/Abidjan] PHP   1. {main}() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:0
+[30-Jun-2025 13:08:24 Africa/Abidjan] PHP   2. include() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:4
+[30-Jun-2025 13:08:24 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Failed opening required 'Database.php' (include_path='.;C:\php\pear') in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php:2
+Stack trace:
+#0 D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php(4): include()
+#1 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 13:08:35 Africa/Abidjan] PHP Warning:  require_once(Database.php): Failed to open stream: No such file or directory in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 13:08:35 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 13:08:35 Africa/Abidjan] PHP   1. {main}() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:0
+[30-Jun-2025 13:08:35 Africa/Abidjan] PHP   2. include() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:4
+[30-Jun-2025 13:08:35 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Failed opening required 'Database.php' (include_path='.;C:\php\pear') in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php:2
+Stack trace:
+#0 D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php(4): include()
+#1 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 13:08:39 Africa/Abidjan] PHP Warning:  require_once(Database.php): Failed to open stream: No such file or directory in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 13:08:39 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 13:08:39 Africa/Abidjan] PHP   1. {main}() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:0
+[30-Jun-2025 13:08:39 Africa/Abidjan] PHP   2. include() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:4
+[30-Jun-2025 13:08:39 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Failed opening required 'Database.php' (include_path='.;C:\php\pear') in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php:2
+Stack trace:
+#0 D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php(4): include()
+#1 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 13:14:39 Africa/Abidjan] PHP Warning:  require_once(Database.php): Failed to open stream: No such file or directory in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 13:14:39 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 13:14:39 Africa/Abidjan] PHP   1. {main}() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:0
+[30-Jun-2025 13:14:39 Africa/Abidjan] PHP   2. include() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:4
+[30-Jun-2025 13:14:39 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Failed opening required 'Database.php' (include_path='.;C:\php\pear') in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php:2
+Stack trace:
+#0 D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php(4): include()
+#1 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 13:17:43 Africa/Abidjan] PHP Warning:  require_once(Database.php): Failed to open stream: No such file or directory in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 13:17:43 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 13:17:43 Africa/Abidjan] PHP   1. {main}() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:0
+[30-Jun-2025 13:17:43 Africa/Abidjan] PHP   2. include() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:4
+[30-Jun-2025 13:17:43 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Failed opening required 'Database.php' (include_path='.;C:\php\pear') in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php:2
+Stack trace:
+#0 D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php(4): include()
+#1 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 13:18:03 Africa/Abidjan] PHP Warning:  require_once(Database.php): Failed to open stream: No such file or directory in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 13:18:03 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 13:18:03 Africa/Abidjan] PHP   1. {main}() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:0
+[30-Jun-2025 13:18:03 Africa/Abidjan] PHP   2. include() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:4
+[30-Jun-2025 13:18:03 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Failed opening required 'Database.php' (include_path='.;C:\php\pear') in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php:2
+Stack trace:
+#0 D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php(4): include()
+#1 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 13:18:42 Africa/Abidjan] PHP Warning:  require_once(Database.php): Failed to open stream: No such file or directory in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 13:18:42 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 13:18:42 Africa/Abidjan] PHP   1. {main}() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:0
+[30-Jun-2025 13:18:42 Africa/Abidjan] PHP   2. include() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:4
+[30-Jun-2025 13:18:42 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Failed opening required 'Database.php' (include_path='.;C:\php\pear') in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php:2
+Stack trace:
+#0 D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php(4): include()
+#1 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 13:18:47 Africa/Abidjan] PHP Warning:  require_once(Database.php): Failed to open stream: No such file or directory in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[30-Jun-2025 13:18:47 Africa/Abidjan] PHP Stack trace:
+[30-Jun-2025 13:18:47 Africa/Abidjan] PHP   1. {main}() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:0
+[30-Jun-2025 13:18:47 Africa/Abidjan] PHP   2. include() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:4
+[30-Jun-2025 13:18:47 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Failed opening required 'Database.php' (include_path='.;C:\php\pear') in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php:2
+Stack trace:
+#0 D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php(4): include()
+#1 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[01-Jul-2025 02:03:00 Africa/Abidjan] PHP Warning:  require_once(Database.php): Failed to open stream: No such file or directory in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[01-Jul-2025 02:03:00 Africa/Abidjan] PHP Stack trace:
+[01-Jul-2025 02:03:00 Africa/Abidjan] PHP   1. {main}() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:0
+[01-Jul-2025 02:03:00 Africa/Abidjan] PHP   2. include() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:4
+[01-Jul-2025 02:03:00 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Failed opening required 'Database.php' (include_path='.;C:\php\pear') in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php:2
+Stack trace:
+#0 D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php(4): include()
+#1 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[01-Jul-2025 02:03:22 Africa/Abidjan] PHP Warning:  require_once(Database.php): Failed to open stream: No such file or directory in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
+[01-Jul-2025 02:03:22 Africa/Abidjan] PHP Stack trace:
+[01-Jul-2025 02:03:22 Africa/Abidjan] PHP   1. {main}() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:0
+[01-Jul-2025 02:03:22 Africa/Abidjan] PHP   2. include() D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php:4
+[01-Jul-2025 02:03:22 Africa/Abidjan] PHP Fatal error:  Uncaught Error: Failed opening required 'Database.php' (include_path='.;C:\php\pear') in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php:2
+Stack trace:
+#0 D:\wamp\www\Logiciel_Soutenance\vues\admin\index.php(4): include()
+#1 {main}
+  thrown in D:\wamp\www\Logiciel_Soutenance\classes\Traitement.php on line 2
