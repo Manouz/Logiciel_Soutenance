@@ -278,17 +278,17 @@ function createUserSession($user, $remember = false) {
  */
 function getUserDashboardUrl($role) {
     $dashboards = [
-        'Administrateur' => 'pages/admin/index.php',
-        'Responsable Scolarité' => 'pages/responsable_scolarite/index.php',
-        'Chargé Communication' => 'pages/charge_communication/index.php',
-        'Commission' => 'pages/commission/index.php',
-        'Secrétaire' => 'pages/secretaire/index.php',
-        'Enseignant' => 'pages/enseignant/index.php',
-        'Étudiant' => 'pages/etudiant/index.php',
-        'Personnel Administratif' => 'pages/personnel/index.php'
+        'Administrateur' => 'vues/admin/index.php',
+        'Responsable Scolarité' => 'vues/responsable_scolarite/index.php',
+        'Chargé Communication' => 'vues/charge_communication/index.php',
+        'Commission' => 'vues/commission/index.php',
+        'Secrétaire' => 'vues/secretaire/index.php',
+        'Enseignant' => 'vues/enseignant/index.php',
+        'Étudiant' => 'vues/etudiant/index.php',
+        'Personnel Administratif' => 'vues/personnel/index.php'
     ];
     
-    return $dashboards[$role] ?? 'pages/default/index.php';
+    return $dashboards[$role] ?? 'vues/default/index.php';
 }
 
 /**

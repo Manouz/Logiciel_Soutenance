@@ -5,7 +5,7 @@
  */
 
 // Inclure les fichiers nécessaires dans le bon ordre
-require_once '../../config/constants.php';
+/*require_once '../../config/constants.php';
 require_once '../../config/database.php';
 require_once '../../includes/functions.php';
 
@@ -134,7 +134,7 @@ try {
         'rapports_valides_mois' => 0
     ];
     $activites_recentes = [];
-}
+}*/
 ?>
 <!DOCTYPE html>
 <html lang="fr">
